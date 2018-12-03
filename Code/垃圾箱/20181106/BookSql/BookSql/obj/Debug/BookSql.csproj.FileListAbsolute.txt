@@ -1,0 +1,14 @@
+E:\boooook\test\test\bin\Debug\BookSql.dll
+E:\boooook\test\test\bin\Debug\BookSql.pdb
+E:\boooook\BookSql\BookSql\obj\Debug\BookSql.csprojAssemblyReference.cache
+E:\boooook\BookSql\BookSql\obj\Debug\BookSql.csproj.CoreCompileInputs.cache
+E:\boooook\BookSql\BookSql\obj\Debug\BookSql.csproj.CopyComplete
+E:\boooook\BookSql\BookSql\obj\Debug\BookSql.dll
+E:\boooook\BookSql\BookSql\obj\Debug\BookSql.pdb
+E:\boooook\Code\run\run\bin\Debug\BookSql.dll
+E:\boooook\Code\run\run\bin\Debug\BookSql.pdb
+E:\boooook\Code\BookSql\BookSql\obj\Debug\BookSql.csprojAssemblyReference.cache
+E:\boooook\Code\BookSql\BookSql\obj\Debug\BookSql.csproj.CoreCompileInputs.cache
+E:\boooook\Code\BookSql\BookSql\obj\Debug\BookSql.csproj.CopyComplete
+E:\boooook\Code\BookSql\BookSql\obj\Debug\BookSql.dll
+E:\boooook\Code\BookSql\BookSql\obj\Debug\BookSql.pdb

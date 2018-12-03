@@ -1,0 +1,14 @@
+E:\boooook\test\test\bin\Debug\Rule.dll
+E:\boooook\test\test\bin\Debug\Rule.pdb
+E:\boooook\Rule\Rule\obj\Debug\Rule.csprojAssemblyReference.cache
+E:\boooook\Rule\Rule\obj\Debug\Rule.csproj.CoreCompileInputs.cache
+E:\boooook\Rule\Rule\obj\Debug\Rule.csproj.CopyComplete
+E:\boooook\Rule\Rule\obj\Debug\Rule.dll
+E:\boooook\Rule\Rule\obj\Debug\Rule.pdb
+E:\boooook\Code\run\run\bin\Debug\Rule.dll
+E:\boooook\Code\run\run\bin\Debug\Rule.pdb
+E:\boooook\Code\Rule\Rule\obj\Debug\Rule.csprojAssemblyReference.cache
+E:\boooook\Code\Rule\Rule\obj\Debug\Rule.csproj.CoreCompileInputs.cache
+E:\boooook\Code\Rule\Rule\obj\Debug\Rule.csproj.CopyComplete
+E:\boooook\Code\Rule\Rule\obj\Debug\Rule.dll
+E:\boooook\Code\Rule\Rule\obj\Debug\Rule.pdb

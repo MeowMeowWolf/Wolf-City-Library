@@ -1,0 +1,117 @@
+    static class OBF
+    {
+
+        /// 判断对象是否可序列化
+        public static Boolean isSerializable(object obj)
+        {
+            return (obj.GetType().IsSerializable);
+        }
+
+        // 以下是二进制格式，也可以用xml格式
+        // System.Runtime.Serialization、System.Runtime.Serialization.Formatters.Binary
+
+        // 对象转byte[]
+        public static byte[] Object2Bytes(object obj)
+        {
+            byte[] buff;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                IFormatter iFormatter = new BinaryFormatter();
+                iFormatter.Serialize(ms, obj);
+                buff = ms.GetBuffer();
+            }
+            return buff;
+        }
+        // byte[]转对象
+        public static object Bytes2Object(byte[] buff)
+        {
+            object obj;
+            using (MemoryStream ms = new MemoryStream(buff))
+            {
+                IFormatter iFormatter = new BinaryFormatter();
+                obj = iFormatter.Deserialize(ms);
+            }
+            return obj;
+        }
+        
+
+        // System.IO
+        // 将文件转换为byte数组
+        public static byte[] File2Bytes(string PathFile)
+        {
+            if (!File.Exists(PathFile))
+            {
+                return new byte[0];
+            }
+
+            FileInfo fi = new FileInfo(PathFile);
+            byte[] buff = new byte[fi.Length];
+
+            FileStream fs = fi.OpenRead();
+            fs.Read(buff, 0, Convert.ToInt32(fs.Length));
+            fs.Close();
+
+            return buff;
+        }
+
+        // 将byte数组转换为文件并保存到指定地址
+        public static void Bytes2File(byte[] buff, string PathFile)
+        {
+            if (File.Exists(PathFile))
+            {
+                File.Delete(PathFile);
+            }
+
+            FileStream fs = new FileStream(PathFile, FileMode.CreateNew);
+            BinaryWriter bw = new BinaryWriter(fs);
+            bw.Write(buff, 0, buff.Length);
+            bw.Close();
+            fs.Close();
+        }
+    }
+
+    [Serializable]
+    public class Book
+    {
+        Dictionary<string, string> Writer;
+        public Book()
+        {
+            Writer = new Dictionary<string, string>();
+            Writer.Add("水浒传", "施耐庵");
+            Writer.Add("西游记", "吴承恩");
+            Writer.Add("三国演义", "罗贯中");
+            Writer.Add("红楼梦", "曹雪芹");
+        }
+        public void print()
+        {
+            Console.WriteLine($"————开始输出————");
+            foreach (string key in Writer.Keys)
+            { Console.WriteLine($"{key}:{Writer[key]}"); }
+            Console.WriteLine($"————输出完毕————");
+        }
+    }
+
+    class Program
+    {
+        
+        
+        static void Main(string[] args)
+        {
+            string FileName = "记录.txt";
+            if (File.Exists(FileName)) { File.Delete(FileName); }
+
+            Book s1 = new Book();
+            Book s2;
+            Console.WriteLine($"对象是否可序列化：{OBF.isSerializable(s1)}");
+            
+            byte[] b1 = OBF.Object2Bytes(s1);
+            OBF.Bytes2File(b1, FileName);
+
+            byte[] b2 = OBF.File2Bytes(FileName);
+            s2 = (Book)OBF.Bytes2Object(b2);
+
+            s1.print();
+            s2.print();
+            Console.ReadKey();
+        }
+    }

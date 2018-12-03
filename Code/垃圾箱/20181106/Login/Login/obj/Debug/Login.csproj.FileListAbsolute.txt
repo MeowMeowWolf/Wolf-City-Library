@@ -1,0 +1,14 @@
+E:\boooook\test\test\bin\Debug\Login.dll
+E:\boooook\test\test\bin\Debug\Login.pdb
+E:\boooook\Login\Login\obj\Debug\Login.csprojAssemblyReference.cache
+E:\boooook\Login\Login\obj\Debug\Login.csproj.CoreCompileInputs.cache
+E:\boooook\Login\Login\obj\Debug\Login.dll
+E:\boooook\Login\Login\obj\Debug\Login.pdb
+E:\boooook\Login\Login\obj\Debug\Login.csproj.CopyComplete
+E:\boooook\Code\run\run\bin\Debug\Login.dll
+E:\boooook\Code\run\run\bin\Debug\Login.pdb
+E:\boooook\Code\Login\Login\obj\Debug\Login.csprojAssemblyReference.cache
+E:\boooook\Code\Login\Login\obj\Debug\Login.csproj.CoreCompileInputs.cache
+E:\boooook\Code\Login\Login\obj\Debug\Login.csproj.CopyComplete
+E:\boooook\Code\Login\Login\obj\Debug\Login.dll
+E:\boooook\Code\Login\Login\obj\Debug\Login.pdb

@@ -1,0 +1,16 @@
+E:\boooook\Code\Mix\Mix\bin\Debug\Mix.exe.config
+E:\boooook\Code\Mix\Mix\bin\Debug\Mix.exe
+E:\boooook\Code\Mix\Mix\bin\Debug\Mix.pdb
+E:\boooook\Code\Mix\Mix\obj\Debug\Mix.csprojAssemblyReference.cache
+E:\boooook\Code\Mix\Mix\obj\Debug\Mix.csproj.CoreCompileInputs.cache
+E:\boooook\Code\Mix\Mix\obj\Debug\Mix.csproj.CopyComplete
+E:\boooook\Code\Mix\Mix\obj\Debug\Mix.exe
+E:\boooook\Code\Mix\Mix\obj\Debug\Mix.pdb
+C:\Users\Administrator\Desktop\boooook\Code\Mix\Mix\bin\Debug\Mix.exe.config
+C:\Users\Administrator\Desktop\boooook\Code\Mix\Mix\bin\Debug\Mix.exe
+C:\Users\Administrator\Desktop\boooook\Code\Mix\Mix\bin\Debug\Mix.pdb
+C:\Users\Administrator\Desktop\boooook\Code\Mix\Mix\obj\Debug\Mix.csprojAssemblyReference.cache
+C:\Users\Administrator\Desktop\boooook\Code\Mix\Mix\obj\Debug\Mix.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\boooook\Code\Mix\Mix\obj\Debug\Mix.csproj.CopyComplete
+C:\Users\Administrator\Desktop\boooook\Code\Mix\Mix\obj\Debug\Mix.exe
+C:\Users\Administrator\Desktop\boooook\Code\Mix\Mix\obj\Debug\Mix.pdb

@@ -1,0 +1,12 @@
+            Assembly dllBookCard = Assembly.LoadFrom("AbilityLib.dll");
+            //实际上程序运行时已经加载过一次dll文件，若用“Assembly.Load”二次加载则失败，因为强次加载时已将其锁定，推荐“ReflectionOnlyLoadFrom”
+
+            tAbilityBase Ability = (tAbilityBase)dllBookCard.CreateInstance("AbilityLib.bbb");
+            Ability.AbilityDo();
+
+            //Type AbilityLib = dllBookCard.GetType("BookCard.lAbility");
+            //tAbilityBase abc = (tAbilityBase)AbilityLib.InvokeMember("aaa", BindingFlags.Default | BindingFlags.InvokeMethod, null, null, new object[] { });
+            //abc.AbilityDo();
+			
+			
+方法：DllImport / Declare
