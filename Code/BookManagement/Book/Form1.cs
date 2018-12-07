@@ -91,9 +91,10 @@ namespace Book
             }
         }
 
-        // 刷新table
+        // 刷新表格内容
         private void RefreshBookPageTable()
         {
+            // 清空表格的行数据
             this.BookPageTable.Rows.Clear();
 
             if (BrowseStatus)

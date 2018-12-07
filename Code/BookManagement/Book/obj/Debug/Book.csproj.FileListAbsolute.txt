@@ -20,3 +20,14 @@ C:\Users\Administrator\Desktop\boooook\Code\Mix\Mix\bin\Debug\Book.pdb
 C:\Users\Administrator\Desktop\boooook\Code\BookManagement\Book\obj\Debug\Book.Properties.Resources.resources
 C:\Users\Administrator\Desktop\boooook\Code\BookManagement\Book\obj\Debug\Book.csproj.CoreCompileInputs.cache
 C:\Users\Administrator\Desktop\boooook\Code\BookManagement\Book\obj\Debug\Book.csproj.CopyComplete
+E:\GitHub\WolfCityLibrary\Code\Mix\Mix\bin\Debug\Book.exe.config
+E:\GitHub\WolfCityLibrary\Code\Mix\Mix\bin\Debug\Book.exe
+E:\GitHub\WolfCityLibrary\Code\Mix\Mix\bin\Debug\Book.pdb
+E:\GitHub\WolfCityLibrary\Code\BookManagement\Book\obj\Debug\Book.csprojAssemblyReference.cache
+E:\GitHub\WolfCityLibrary\Code\BookManagement\Book\obj\Debug\Book.Form1.resources
+E:\GitHub\WolfCityLibrary\Code\BookManagement\Book\obj\Debug\Book.Properties.Resources.resources
+E:\GitHub\WolfCityLibrary\Code\BookManagement\Book\obj\Debug\Book.csproj.GenerateResource.cache
+E:\GitHub\WolfCityLibrary\Code\BookManagement\Book\obj\Debug\Book.csproj.CoreCompileInputs.cache
+E:\GitHub\WolfCityLibrary\Code\BookManagement\Book\obj\Debug\Book.csproj.CopyComplete
+E:\GitHub\WolfCityLibrary\Code\BookManagement\Book\obj\Debug\Book.exe
+E:\GitHub\WolfCityLibrary\Code\BookManagement\Book\obj\Debug\Book.pdb
