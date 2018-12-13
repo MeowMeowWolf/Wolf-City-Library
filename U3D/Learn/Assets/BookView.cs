@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace BookView
 {
@@ -40,13 +42,28 @@ namespace BookView
     public class Operation
     {
 
+        public static bool ClickOnUI()
+        {
+            return false;
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                Debug.Log("点在UI上");
+                return true;
+            }
+            else
+            {
+                Debug.Log("点在场景里");
+                return false;
+            }
+        }
+       
         // 鼠标点击位置及点击物体检测
         public static bool ClickPoint(out Vector3 point, out GameObject gameObject)
         {
             // 需要把摄像头物件的tag标记为MainCamera
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
+            if (!ClickOnUI() && Physics.Raycast(ray, out hit))
             {
                 point = hit.point;
                 gameObject = hit.collider.gameObject;
@@ -72,8 +89,9 @@ namespace BookView
             RaycastHit hit;
             while (true)
             {
-                if (Physics.Raycast(ray, out hit))
+                if (!ClickOnUI() && Physics.Raycast(ray, out hit)  )
                 {
+                    Debug.Log("判读"+ hit.collider.gameObject.name);
                     if (gameObjectNameRegex.IsMatch(hit.collider.gameObject.name))
                     {
                         point = hit.point;
@@ -438,7 +456,9 @@ namespace BookView
         // 消息类型
         public enum eMsgType
         {
+            Null = 0, // 无用的消息
             Destroy = 1, // 销毁自身
+            Collision = 2, // 碰撞事件
         }
 
         // 消息包
@@ -460,138 +480,113 @@ namespace BookView
                 Msg = msg;
             }
         }
-
-        public class Msg : EventArgs
-        {
-            string SomeWords;
-        }
-
-        public delegate void MsgListenerDelegate(Packet packet);
-        private static Dictionary<uint, MsgListenerDelegate> Listener;
-
-
-
-        // 监听
-
-        // 发送者
-
-        // 接收者的基类
-
-
-        // 委托
-    }
-
-    /*
-    // 消息传递
-    public class Message
-    {
-        // 消息类型
-        public enum eMsgType
-        {
-            ENull = 0,
-            ELoadResProgress = 1,
-        }
-
-        // 消息
-        public class Packet
-        {
-            public GameObject sender;
-            public EventArgs Msg;
-
-            public Packet() { }
-            public Packet(EventArgs msg)
-            {
-                this.sender = null;
-                this.Msg = msg;
-            }
-            public Packet(GameObject sender, EventArgs msg)
-            {
-                this.sender = sender;
-                this.Msg = msg;
-            }
-        }
-
-        // 消息事件
-        public class EventArgsMsg : EventArgs
-        {
-            public int id;
-            public string name;
-        }
-
-        // 消息包委托
-        public delegate void MsgPacketDelegate(Packet MsgPacket);
+        
+        // 消息接收者的消息处理函数的委托
+        public delegate void ReceiverDelegate(Packet packet);
 
         // 消息中心
-        public static class MessageCenter
+        public static class Center
         {
-            // 监听组
-            private static Dictionary<uint, MsgPacketDelegate> Listener = new Dictionary<uint, MsgPacketDelegate>();
+            // 监听列表
+            private static Dictionary<uint, ReceiverDelegate> Receivers = new Dictionary<uint, ReceiverDelegate>();
 
             // 注册消息监听
-            public static void AddEventListener(uint eventKey, MsgPacketDelegate listener)
+            public static void AddReceiver(uint msgType, ReceiverDelegate Receive)
             {
-                if (!Listener.ContainsKey(eventKey))
+                if (!Receivers.ContainsKey(msgType))
                 {
-                    MsgPacketDelegate del = null; //定义方法
-                    Listener[eventKey] = del;// 给委托变量赋值
+                    ReceiverDelegate del = null; //定义方法
+                    Receivers[msgType] = del;// 给委托变量赋值
                 }
-                Listener[eventKey] += listener; //注册接收者的监听
+                Receivers[msgType] += Receive; //注册接收者的监听
             }
+
             // 注销消息监听
-            public static void RemoveEventListener(uint eventKey, MsgPacketDelegate listener)
+            public static void RemoveReceiver(uint msgType, ReceiverDelegate Receive)
             {
-                if (!Listener.ContainsKey(eventKey))
+                if (!Receivers.ContainsKey(msgType))
                     return;
-                Listener[eventKey] -= listener;
-                if (Listener[eventKey] == null)
+                Receivers[msgType] -= Receive;
+                if (Receivers[msgType] == null)
                 {
-                    RemoveEventListener(eventKey);
+                    Receivers.Remove(msgType); 
                 }
             }
-            public static void RemoveEventListener(uint eventKey)
-            {
-                Listener.Remove(eventKey);
-            }
 
-            // 
-            public static void Push(uint eventKey, Packet notific)
+            // 消息推送
+            public static void Push(Packet packet)
             {
-                if (!Listener.ContainsKey(eventKey))
-                    return;
-                Listener[eventKey](notific);
+                uint msgType = (uint)packet.MsgType;
+                if (Receivers.ContainsKey(msgType))
+                {
+                    Receivers[msgType](packet);
+                }
             }
-            public static void Push(uint eventKey, GameObject sender , EventArgs msg)
-            {
-                if (!Listener.ContainsKey(eventKey))
-                    return;
-                Listener[eventKey](new Packet(sender, msg));
-            }
+        }
 
-        } // MessageCenter
-
+        // 接收者的基类
         public class Receiver
         {
-            void Awake()
+            // 注册监听
+            public void ReceiveOpen(eMsgType MsgType)
             {
-                MessageCenter.AddEventListener((uint)eMsgType.ENull, Update);
+                Center.AddReceiver( (uint)MsgType, ReceiveToDo);
             }
-            void Destroy()
+            // 注销监听
+            public void ReceiveClose(eMsgType MsgType)
             {
-                MessageCenter.RemoveEventListener((uint)eMsgType.ENull, Update);
+                Center.RemoveReceiver((uint)MsgType, ReceiveToDo);
             }
+            // 消息处理
+            public virtual void ReceiveToDo(Packet packet)
+            {
+                // Do Something
+            }
+        }
 
-            void Update(Packet e)
-            {
-                EventArgsMsg args = e.Msg as EventArgsMsg;
-                if (args != null)
-                {
-                    string strName = args.name;
-                    int strId = args.id;
-                }
-            }
+        // 消息基类
+        public class MsgBase : EventArgs
+        {
+            public DateTime HappenTime;
+            public string Describe;
+        }
+
+        // GameObject销毁命令消息
+        public class MsgDestroyGameObject : MsgBase
+        {
+            public GameObject Obj;
+        }
+
+        // 子弹命中消息
+        public class MsgCollision : MsgBase
+        {
+            public GameObject Colliding;
+            public GameObject Collided;
         }
 
     } // Message
-    */
+
+
+    public class MyGui
+    {
+
+        // 顶部文字
+        public static void ObjectTopText(GameObject Obj, float HeightOverObjTop, string Text)
+        {
+            Vector3 pV3 = Obj.transform.position;
+            pV3.y = pV3.y + Obj.GetComponent<Collider>().bounds.size.y + HeightOverObjTop; // 物体头部位置
+
+            pV3 = Camera.main.WorldToScreenPoint(pV3); // 转化为屏幕坐标
+            Vector2 pV2 = new Vector2(pV3.x, Screen.height - pV3.y); // 3D场景和2D屏幕的Y轴方向是相反的，倒转很重要
+
+            Vector2 StrSize = GUI.skin.label.CalcSize(new GUIContent(Text)); // 文字需要占用的屏幕面积
+            pV2.x = pV2.x - StrSize.x / 2; // 由于文字输出以左上角为position点
+            pV2.y = pV2.y - StrSize.y / 2; // 所以需要调整位置，让文字居中
+            GUI.color = Color.red; // 文字颜色
+            GUI.Label(new Rect(pV2, StrSize), Text);
+        }
+
+
+    }
 
 }// BookView
