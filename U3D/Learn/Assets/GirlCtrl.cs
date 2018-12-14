@@ -23,7 +23,7 @@ public class GirlCtrl : MonoBehaviour {
         Ball = GameObject.Find("Ball");
         mctrl = new Movement.MovingControl(Girl, 0.1);
 
-        Sensce.CreateAirWallBox(new Vector3(0, 8, 0), new Vector3(15, 20, 28));
+        Sensce.CreateAirWallBox(new Vector3(0, 5, 0), new Vector3(25, 20, 25));
     }
 
     // Update is called once per frame

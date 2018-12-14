@@ -36,7 +36,7 @@ public class BiuBiuBiu : MonoBehaviour {
     {
         Girl = GameObject.Find("Girl");
 
-        wall = GameObject.Find("Cube-+");
+        wall = GameObject.Find("WallBlue");
         wallReceiver = new WallReceiver();
         wallReceiver.Life = 5;
         wallReceiver.Obj = wall;
@@ -58,12 +58,12 @@ public class BiuBiuBiu : MonoBehaviour {
         {
             Vector3 click;
             GameObject obj;
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex("^Plane$");
+            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex("^Ground");
             if (Operation.ClickPoint(out click, out obj, regex))
             {
                 string objName = obj.name;
                 Debug.Log("点击：" + obj.name);
-                if (objName == "Plane")
+                if (objName == "Ground")
                 {
                     Others.CreateAndBiu(BallPrefab, "NewBall", click + new Vector3(0, 2, 0), new Vector3(0, -2, 0));
                 }
