@@ -3,22 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using BookView;
 using System;
+using MsgCenter;
 
 public class Bullet : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
     private void OnCollisionEnter(Collision collision)
     {
-        Message.MsgCollision msg = new Message.MsgCollision();
+        ViewMsg.CollisionMsg msg = new ViewMsg.CollisionMsg();
         msg.HappenTime = DateTime.Now;
         msg.Colliding = this.gameObject;
         msg.Collided = collision.gameObject;

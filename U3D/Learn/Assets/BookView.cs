@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using MsgCenter;
 
 namespace BookView
 {
@@ -21,13 +22,23 @@ namespace BookView
     public class ForDebug
     {
         // 清理debug日志
+        private static bool isClean = false;
         public static void ClearConsole()
         {
-            /*using System; using System.Reflection; using UnityEditor;*/
-            Assembly assembly = Assembly.GetAssembly(typeof(SceneView));
-            Type logEntries = assembly.GetType("UnityEditor.LogEntries");
-            MethodInfo clearConsoleMethod = logEntries.GetMethod("Clear");
-            clearConsoleMethod.Invoke(new object(), null);
+            if (isClean == false)
+            {
+                /*using System; using System.Reflection; using UnityEditor;*/
+                Assembly assembly = Assembly.GetAssembly(typeof(SceneView));
+                Type logEntries = assembly.GetType("UnityEditor.LogEntries");
+                MethodInfo clearConsoleMethod = logEntries.GetMethod("Clear");
+                clearConsoleMethod.Invoke(new object(), null);
+                isClean = true;
+
+                Debug.Log("模块的完整路径：" + System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+                Debug.Log("当前目录：" + System.Environment.CurrentDirectory);
+                Debug.Log("程序的当前工作目录：" + System.IO.Directory.GetCurrentDirectory());
+                Debug.Log("程序的基目录：" + System.AppDomain.CurrentDomain.BaseDirectory);
+            }
         }
 
         // 画一条线（只有在Scene能看见）
@@ -91,7 +102,7 @@ namespace BookView
             {
                 if (!ClickOnUI() && Physics.Raycast(ray, out hit)  )
                 {
-                    Debug.Log("判读"+ hit.collider.gameObject.name);
+                    Debug.Log("判断"+ hit.collider.gameObject.name);
                     if (gameObjectNameRegex.IsMatch(hit.collider.gameObject.name))
                     {
                         point = hit.point;
@@ -450,121 +461,21 @@ namespace BookView
 
     } // Others
 
-
-    public class Message
+    public class ViewMsg
     {
-        // 消息类型
-        public enum eMsgType
-        {
-            Null = 0, // 无用的消息
-            Destroy = 1, // 销毁自身
-            Collision = 2, // 碰撞事件
-        }
-
-        // 消息包
-        public class Packet
-        {
-            public GameObject Sender;
-            public eMsgType MsgType;
-            public EventArgs Msg;
-            public Packet(eMsgType msgType, EventArgs msg)
-            {
-                Sender = null;
-                MsgType = msgType;
-                Msg = msg;
-            }
-            public Packet(GameObject sender, eMsgType msgType, EventArgs msg)
-            {
-                Sender = sender;
-                MsgType = msgType;
-                Msg = msg;
-            }
-        }
-        
-        // 消息接收者的消息处理函数的委托
-        public delegate void ReceiverDelegate(Packet packet);
-
-        // 消息中心
-        public static class Center
-        {
-            // 监听列表
-            private static Dictionary<uint, ReceiverDelegate> Receivers = new Dictionary<uint, ReceiverDelegate>();
-
-            // 注册消息监听
-            public static void AddReceiver(uint msgType, ReceiverDelegate Receive)
-            {
-                if (!Receivers.ContainsKey(msgType))
-                {
-                    ReceiverDelegate del = null; //定义方法
-                    Receivers[msgType] = del;// 给委托变量赋值
-                }
-                Receivers[msgType] += Receive; //注册接收者的监听
-            }
-
-            // 注销消息监听
-            public static void RemoveReceiver(uint msgType, ReceiverDelegate Receive)
-            {
-                if (!Receivers.ContainsKey(msgType))
-                    return;
-                Receivers[msgType] -= Receive;
-                if (Receivers[msgType] == null)
-                {
-                    Receivers.Remove(msgType); 
-                }
-            }
-
-            // 消息推送
-            public static void Push(Packet packet)
-            {
-                uint msgType = (uint)packet.MsgType;
-                if (Receivers.ContainsKey(msgType))
-                {
-                    Receivers[msgType](packet);
-                }
-            }
-        }
-
-        // 接收者的基类
-        public class Receiver
-        {
-            // 注册监听
-            public void ReceiveOpen(eMsgType MsgType)
-            {
-                Center.AddReceiver( (uint)MsgType, ReceiveToDo);
-            }
-            // 注销监听
-            public void ReceiveClose(eMsgType MsgType)
-            {
-                Center.RemoveReceiver((uint)MsgType, ReceiveToDo);
-            }
-            // 消息处理
-            public virtual void ReceiveToDo(Packet packet)
-            {
-                // Do Something
-            }
-        }
-
-        // 消息基类
-        public class MsgBase : EventArgs
-        {
-            public DateTime HappenTime;
-            public string Describe;
-        }
-
-        // GameObject销毁命令消息
-        public class MsgDestroyGameObject : MsgBase
-        {
-            public GameObject Obj;
-        }
-
-        // 子弹命中消息
-        public class MsgCollision : MsgBase
+        // 物体碰撞消息
+        public class CollisionMsg : Message.MsgBase
         {
             public GameObject Colliding;
             public GameObject Collided;
         }
 
-    } // Message
+        // GameObject销毁命令消息
+        public class DestroyOrderMsg : Message.MsgBase
+        {
+            public GameObject DestroyedObj;
+        }
+    }
 
 
     public class MyGui
@@ -588,5 +499,5 @@ namespace BookView
 
 
     }
-
+    
 }// BookView

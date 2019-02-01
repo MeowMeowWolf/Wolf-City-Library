@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using BookView;
+using MsgCenter;
 
 public class BiuBiuBiu : MonoBehaviour {
 
@@ -16,7 +17,7 @@ public class BiuBiuBiu : MonoBehaviour {
         public GameObject Obj;
         public override void ReceiveToDo(Message.Packet packet)
         {
-            Message.MsgCollision e = packet.Msg as Message.MsgCollision;
+            ViewMsg.CollisionMsg e = packet.Msg as ViewMsg.CollisionMsg;
             if (e.Collided == Obj)
             {
                 Debug.Log(e.Describe);
@@ -26,21 +27,30 @@ public class BiuBiuBiu : MonoBehaviour {
                     Destroy(Obj);
                     ReceiveClose(Message.eMsgType.Collision);
                 }
-                Destroy(e.Colliding, 0.1f);
+                Destroy(e.Colliding);
             }
         }
     }
 
-    // Use this for initialization
-    void Start()
+    void Awake()
     {
+        ForDebug.ClearConsole();
         Girl = GameObject.Find("Girl");
-
         wall = GameObject.Find("WallBlue");
         wallReceiver = new WallReceiver();
         wallReceiver.Life = 5;
         wallReceiver.Obj = wall;
         wallReceiver.ReceiveOpen(Message.eMsgType.Collision);
+
+        Debug.Log("加载预制体");
+        //BallPrefab = (GameObject)Instantiate(Resources.Load("BallPrefab"));
+        BallPrefab = Resources.Load(@"Bullet\BallPrefab") as GameObject;
+        Debug.Log("预制体：" + BallPrefab.name);
+    }
+
+    // Use this for initialization
+    void Start()
+    {
     }
 
     // Update is called once per frame

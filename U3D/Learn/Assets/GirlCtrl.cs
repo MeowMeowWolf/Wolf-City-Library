@@ -12,9 +12,8 @@ public class GirlCtrl : MonoBehaviour {
     GameObject ChrCamera;
     GameObject Ball;
     Movement.MovingControl mctrl;
-
-    // Use this for initialization
-    void Start()
+    
+    void Awake()
     {
         ForDebug.ClearConsole();
 
@@ -22,7 +21,11 @@ public class GirlCtrl : MonoBehaviour {
         ChrCamera = GameObject.Find("Camera");
         Ball = GameObject.Find("Ball");
         mctrl = new Movement.MovingControl(Girl, 0.1);
+    }
 
+    // Use this for initialization
+    void Start()
+    {
         Sensce.CreateAirWallBox(new Vector3(0, 5, 0), new Vector3(25, 20, 25));
     }
 
