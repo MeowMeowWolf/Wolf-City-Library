@@ -1,60 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bok.BookSql;
 
 namespace Mix
 {
-    public class Camp
-    {
-        public GameRoom ParentRoom;
-
-        public int Id;
-        public string Name;
-        public int SP;//(1)绝对友好 (-1)绝对仇恨 (其他)无特殊变化
-        public Camp() { }
-        public Camp(int id, string name, int sp)
-        { Id = id; Name = name; SP = sp; }
-        public Camp(GameRoom room, string name, int sp)
-        {
-            ParentRoom = room;
-            Id = ParentRoom.Sequence(); Name = name; SP = sp;
-            ParentRoom.RoomCampList.Add(Id, this);
-        }
-        public static void Create2Room(GameRoom room, string name, int sp)
-        {
-            Camp NewCamp = new Camp();
-            NewCamp.ParentRoom = room;
-            NewCamp.Id = NewCamp.ParentRoom.Sequence(); NewCamp.Name = name; NewCamp.SP = sp;
-            NewCamp.ParentRoom.RoomCampList.Add(NewCamp.Id, NewCamp);
-        }
-    }
-
-    public class Character
-    {
-        public Camp Camp;//所属阵营
-
-        public int Id;
-        public string Name;
-        public Boolean Playable;//可操作性
-        public Character(Camp camp, string name, Boolean playable)
-        {
-            Camp = camp;
-            Id = BFC.ParentRoom(Camp).Sequence();
-            Name = name;
-            Playable = playable;
-            BFC.ParentRoom(Camp).RoomChrList.Add(Id, this);
-        }
-
-        public void LoadMyBook(BookSqlCmd Cmd, int MyBook)
-        {
-            Cmd.Reading($"select * from My_Book_T where My_Book={MyBook} Order By Page_Id", false);
-            while (Cmd.Reading())
-            {
-                int tPageId = Cmd.ReadInt("Page_Id");
-                iPage.Create2Chr(this, tPage.List[tPageId]);
-            }
-        }
-    }
+    
 
     public enum eModeType
     {

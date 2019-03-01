@@ -3,37 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bok.BookSql;
 
 namespace Mix
 {
     public class ABI
     {
-        public class AbiInfo
-        {
-            public int AbiTypeId;
-            public string Name;
-            public string AbiCode;
-            public string DescShort;
-            public string DescLong;
-
-            public static Dictionary<int, AbiInfo> List = new Dictionary<int, AbiInfo>();
-            public static void ListFromDB(BookSqlCmd Cmd)
-            {
-                List.Clear();
-                Cmd.Reading("select * from Ability_T", false);
-                while (Cmd.Reading())
-                {
-                    AbiInfo abiInfo = new AbiInfo();
-                    abiInfo.AbiTypeId = Cmd.ReadInt("Abi_Type_Id");
-                    abiInfo.Name = Cmd.ReadString("Abi_Name");
-                    abiInfo.AbiCode = Cmd.ReadString("Abi_Code");
-                    abiInfo.DescShort = Cmd.ReadString("Desc_Short");
-                    abiInfo.DescLong = Cmd.ReadString("Desc_Long");
-                    List.Add(abiInfo.AbiTypeId, abiInfo);
-                }
-            }
-        }
-
+        
         public class Condition
         {
             public Ability ParentAbi;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bok.DebugLog;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -7,92 +8,6 @@ namespace Mix
 
     public static class BFC
     {
-        public static T CreateInstance<T>(string nameSpace, string className, object[] parameters)
-        {
-            //try
-            //{
-                string fullName = nameSpace + "." + className;//命名空间.类型名
-                object ect = Assembly.GetExecutingAssembly().CreateInstance(fullName, true, System.Reflection.BindingFlags.Default, null, parameters, null, null);//加载程序集，创建程序集里面的 命名空间.类型名 实例
-                return (T)ect;//类型转换并返回
-            //}
-            //catch
-            //{
-                //发生异常，返回类型的默认值
-            //    return default(T);
-            //}
-        }
-
-        public static Dictionary<string, string> ExchangeExInfo(string inExInfo)
-        {//转化各种如"物种=人类|性别=男|职业=乌干达"的字符串为Dictionary"
-            Dictionary<string, string> outExInfo = new Dictionary<string, string>();
-            string String1 = inExInfo;
-            string String2 = inExInfo;
-            int cut1 = 0, cut2 = 0;
-            string add1 = null, add2 = null;
-
-            while (String2.Contains("="))
-            {
-                if (String2.Contains("|"))
-                {
-                    cut1 = String2.IndexOf('|');
-                    String1 = String2.Substring(0, cut1);
-                    String2 = String2.Substring(cut1 + 1);
-
-                    cut2 = String1.IndexOf('=');
-                    add1 = String1.Substring(0, cut2);
-                    add2 = String1.Substring(cut2 + 1);
-                    outExInfo.Add(add1, add2);
-                }
-                else
-                {
-                    cut2 = String2.IndexOf('=');
-                    add1 = String2.Substring(0, cut2);
-                    add2 = String2.Substring(cut2 + 1);
-                    outExInfo.Add(add1, add2);
-                    String2 = "";
-                }
-
-                if (String1.Contains("="))
-                {
-                    
-                }
-            }
-
-            return outExInfo;
-        }
-
-        public static List<ABI.AbiInfo> ExchangeAbility(string inString)
-        {//转化各种如"0,1,2,3"的字符串为List，没有附加信息时写"0"
-            List<int> ListTemp = new List<int>();
-            List<ABI.AbiInfo> ListOutput = new List<ABI.AbiInfo>();
-
-            string String1 = inString;
-            string String2 = inString;
-            int cut = 0;
-            while (String2.Length > 0)
-            {
-                if (String2.Contains(","))
-                {
-                    cut = String2.IndexOf(',');
-                    String1 = String2.Substring(0, cut);
-                    String2 = String2.Substring(cut + 1);
-                    ListTemp.Add( Convert.ToInt32(String1) );
-                }
-                else
-                {
-                    ListTemp.Add(Convert.ToInt32(String2));
-                    String2 = "";
-                }
-            }
-
-            foreach (int AbiId in ListTemp)
-            {
-                ListOutput.Add(ABI.AbiInfo.List[AbiId]);
-            }
-
-            return ListOutput;
-        }
-
         public static GameRoom ParentRoom(Camp camp)
         {
             return camp.ParentRoom;
@@ -127,58 +42,58 @@ namespace Mix
 
         }
 
-        public static string Desc(ePageType PageType)
-        {
-            return Enum.GetName(typeof(ePageTypeDesc), (int)PageType);
-        }
-        public static string Desc(eRareLevel RareLevel)
-        {
-            return Enum.GetName(typeof(eRareLevelDesc), (int)RareLevel);
-        }
+        //public static string Desc(ePageType PageType)
+        //{
+        //    return Enum.GetName(typeof(ePageTypeDesc), (int)PageType);
+        //}
+        //public static string Desc(eRareLevel RareLevel)
+        //{
+        //    return Enum.GetName(typeof(eRareLevelDesc), (int)RareLevel);
+        //}
 
-        public static void Print(tPage Page)
-        {
-            Console.WriteLine("——————————————————");
-            Console.WriteLine($"PageId = {Page.tPageId}");
-            Console.WriteLine($"Page_Name = {Page.tName}");
-            Console.WriteLine($"Book = {Page.tBookBelong.tName}");
-            Console.WriteLine($"PageType = {Page.PageType.ToString()}");
-            Console.WriteLine($"RateLevel = {Page.tRateLevel}");
-            Console.WriteLine($"Introduce = {Page.Introduce}");
-            //Console.WriteLine($"SummonRule = {Page.tSummonRule}");
-            Console.WriteLine($"Cost = {Page.tCost}");
-            Console.WriteLine($"AbilityList = {Page.tAbilityList}");
-            foreach (string key in Page.tExInfo.Keys)
-            { Console.Write($"{key}={Page.tExInfo[key]}|"); }
-            Console.WriteLine();
-            switch (Page.PageType)
-            {
-                case ePageType.TheOne:
-                    tTheOnePage oPage = Page as tTheOnePage;
-                    Console.WriteLine($"Life = {oPage.tLife}");
-                    Console.WriteLine($"Atk = {oPage.tAtk}");
-                    Console.WriteLine($"AtkMax = {oPage.tAtkMax}");
-                    break;
-                case ePageType.ThePlace:
-                    tThePlacePage pPage = Page as tThePlacePage;
-                    Console.WriteLine($"Shape = {pPage.tFigure.Shape.ToString()}");
-                    Console.WriteLine($"SizeX = {pPage.tFigure.SizeX}");
-                    Console.WriteLine($"SizeY = {pPage.tFigure.SizeY}");
-                    break;
-                case ePageType.TheEvent:
-                    tTheEventPage ePage = Page as tTheEventPage;
-                    Console.WriteLine($"ActionObject = {ePage.ActionObject}");
-                    break;
-                case ePageType.TheTime:
-                    tTheTimePage tPage = Page as tTheTimePage;
-                    Console.WriteLine($"AttObject = {tPage.AttObject}");
-                    break;
-                default:
-                    break;
-            }
+        //public static void Print(tPage Page)
+        //{
+        //    Console.WriteLine("——————————————————");
+        //    Console.WriteLine($"PageId = {Page.tPageId}");
+        //    Console.WriteLine($"Page_Name = {Page.tName}");
+        //    Console.WriteLine($"Book = {Page.tBookBelong.tName}");
+        //    Console.WriteLine($"PageType = {Page.PageType.ToString()}");
+        //    Console.WriteLine($"RateLevel = {Page.tRateLevel}");
+        //    Console.WriteLine($"Introduce = {Page.Introduce}");
+        //    //Console.WriteLine($"SummonRule = {Page.tSummonRule}");
+        //    Console.WriteLine($"Cost = {Page.tCost}");
+        //    Console.WriteLine($"AbilityList = {Page.tAbilityList}");
+        //    foreach (string key in Page.tExInfo.Keys)
+        //    { Console.Write($"{key}={Page.tExInfo[key]}|"); }
+        //    Console.WriteLine();
+        //    switch (Page.PageType)
+        //    {
+        //        case ePageType.TheOne:
+        //            tTheOnePage oPage = Page as tTheOnePage;
+        //            Console.WriteLine($"Life = {oPage.tLife}");
+        //            Console.WriteLine($"Atk = {oPage.tAtk}");
+        //            Console.WriteLine($"AtkMax = {oPage.tAtkMax}");
+        //            break;
+        //        case ePageType.ThePlace:
+        //            tThePlacePage pPage = Page as tThePlacePage;
+        //            Console.WriteLine($"Shape = {pPage.tFigure.Shape.ToString()}");
+        //            Console.WriteLine($"SizeX = {pPage.tFigure.SizeX}");
+        //            Console.WriteLine($"SizeY = {pPage.tFigure.SizeY}");
+        //            break;
+        //        case ePageType.TheEvent:
+        //            tTheEventPage ePage = Page as tTheEventPage;
+        //            Console.WriteLine($"ActionObject = {ePage.ActionObject}");
+        //            break;
+        //        case ePageType.TheTime:
+        //            tTheTimePage tPage = Page as tTheTimePage;
+        //            Console.WriteLine($"AttObject = {tPage.AttObject}");
+        //            break;
+        //        default:
+        //            break;
+        //    }
 
-            Console.WriteLine("——————————————————");
-        }
+        //    Console.WriteLine("——————————————————");
+        //}
     }
 
     public class Touch
@@ -315,6 +230,7 @@ namespace Mix
             aIntoMap(TheOne, seat);
 
             BFC.ParentRoom(TheOne).AutoAtk.Add(TheOne);
+            LogCenter.Push(new DebugInfo(10,"Info", $"[{Page.Chr.Name}]召唤了<{Page.iName}>"));
             Console.WriteLine($"[{Page.Chr.Name}]召唤了<{Page.iName}>");
             return true;
         }

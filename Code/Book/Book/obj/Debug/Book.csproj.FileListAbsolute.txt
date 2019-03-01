@@ -1,0 +1,7 @@
+E:\GitHub\WolfCityLibrary\Code\Book\Book\obj\Debug\Book.csprojAssemblyReference.cache
+E:\GitHub\WolfCityLibrary\Code\Book\Book\obj\Debug\Book.csproj.CoreCompileInputs.cache
+E:\GitHub\WolfCityLibrary\Code\Run\Book.dll
+E:\GitHub\WolfCityLibrary\Code\Run\Book.pdb
+E:\GitHub\WolfCityLibrary\Code\Book\Book\obj\Debug\Book.csproj.CopyComplete
+E:\GitHub\WolfCityLibrary\Code\Book\Book\obj\Debug\Book.dll
+E:\GitHub\WolfCityLibrary\Code\Book\Book\obj\Debug\Book.pdb

@@ -14,3 +14,14 @@ C:\Users\Administrator\Desktop\boooook\Code\Mix\Mix\obj\Debug\Mix.csproj.CoreCom
 C:\Users\Administrator\Desktop\boooook\Code\Mix\Mix\obj\Debug\Mix.csproj.CopyComplete
 C:\Users\Administrator\Desktop\boooook\Code\Mix\Mix\obj\Debug\Mix.exe
 C:\Users\Administrator\Desktop\boooook\Code\Mix\Mix\obj\Debug\Mix.pdb
+E:\GitHub\WolfCityLibrary\Code\Mix\Mix\obj\Debug\Mix.csprojAssemblyReference.cache
+E:\GitHub\WolfCityLibrary\Code\Mix\Mix\obj\Debug\Mix.csproj.CoreCompileInputs.cache
+E:\GitHub\WolfCityLibrary\Code\Mix\Mix\obj\Debug\Mix.csproj.CopyComplete
+E:\GitHub\WolfCityLibrary\Code\Mix\Mix\obj\Debug\Mix.exe
+E:\GitHub\WolfCityLibrary\Code\Mix\Mix\obj\Debug\Mix.pdb
+E:\GitHub\WolfCityLibrary\Code\Mix.exe.config
+E:\GitHub\WolfCityLibrary\Code\Mix.exe
+E:\GitHub\WolfCityLibrary\Code\Mix.pdb
+E:\GitHub\WolfCityLibrary\Code\Run\Mix.exe.config
+E:\GitHub\WolfCityLibrary\Code\Run\Mix.exe
+E:\GitHub\WolfCityLibrary\Code\Run\Mix.pdb

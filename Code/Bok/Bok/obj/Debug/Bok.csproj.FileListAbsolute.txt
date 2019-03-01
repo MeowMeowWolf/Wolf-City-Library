@@ -1,0 +1,7 @@
+E:\GitHub\WolfCityLibrary\Code\Run\Bok.dll
+E:\GitHub\WolfCityLibrary\Code\Run\Bok.pdb
+E:\GitHub\WolfCityLibrary\Code\Bok\Bok\obj\Debug\Bok.csprojAssemblyReference.cache
+E:\GitHub\WolfCityLibrary\Code\Bok\Bok\obj\Debug\Bok.csproj.CoreCompileInputs.cache
+E:\GitHub\WolfCityLibrary\Code\Bok\Bok\obj\Debug\Bok.csproj.CopyComplete
+E:\GitHub\WolfCityLibrary\Code\Bok\Bok\obj\Debug\Bok.dll
+E:\GitHub\WolfCityLibrary\Code\Bok\Bok\obj\Debug\Bok.pdb
