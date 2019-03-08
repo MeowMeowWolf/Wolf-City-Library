@@ -699,7 +699,7 @@ namespace Bok
                 }
                 else
                 {
-                    throw (new Exception("Err:\"密码错误\"或\"数据库版本与预期不符\""));
+                    throw(new Exception("Err:<密码错误>或<数据库版本与预期不符>"));
                 }
             }
 
@@ -715,7 +715,7 @@ namespace Bok
                 }
                 else
                 {
-                    throw (new Exception("Err:\"密码错误\"或\"数据库版本与预期不符\""));
+                    throw(new Exception("Err:\"密码错误\"或\"数据库版本与预期不符\""));
                 }
             }
 

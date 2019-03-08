@@ -5,3 +5,10 @@ E:\boooook\Code\TEST\TEST\obj\Debug\TEST.csprojAssemblyReference.cache
 E:\boooook\Code\TEST\TEST\obj\Debug\TEST.csproj.CoreCompileInputs.cache
 E:\boooook\Code\TEST\TEST\obj\Debug\TEST.exe
 E:\boooook\Code\TEST\TEST\obj\Debug\TEST.pdb
+E:\GitHub\WolfCityLibrary\Code\TEST\TEST\bin\Debug\TEST.exe.config
+E:\GitHub\WolfCityLibrary\Code\TEST\TEST\bin\Debug\TEST.exe
+E:\GitHub\WolfCityLibrary\Code\TEST\TEST\bin\Debug\TEST.pdb
+E:\GitHub\WolfCityLibrary\Code\TEST\TEST\obj\Debug\TEST.csprojAssemblyReference.cache
+E:\GitHub\WolfCityLibrary\Code\TEST\TEST\obj\Debug\TEST.csproj.CoreCompileInputs.cache
+E:\GitHub\WolfCityLibrary\Code\TEST\TEST\obj\Debug\TEST.exe
+E:\GitHub\WolfCityLibrary\Code\TEST\TEST\obj\Debug\TEST.pdb

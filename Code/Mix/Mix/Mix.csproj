@@ -53,7 +53,6 @@
   <ItemGroup>
     <Compile Include="AbilityLib.cs" />
     <Compile Include="Settlement.cs" />
-    <Compile Include="GameRoom.cs" />
     <Compile Include="Touch.cs" />
     <Compile Include="Mix.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

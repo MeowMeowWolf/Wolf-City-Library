@@ -123,8 +123,8 @@ namespace Book
         public ePageType PageType;
         public uint tRateLevel;
         public string Introduce;
-        //public int tSummonRule;//在数据库找
-        public int tCost;
+        //public uint tSummonRule;//在数据库找
+        public uint tCost;
         public List<tAbility> tAbilityList;
         public Dictionary<string, string> tExInfo;
         public string getExMsg(string inKey)
@@ -143,7 +143,7 @@ namespace Book
             tBookBelong = tBook.List[Cmd.ReadUInt("Book_Id")];
             PageType = (ePageType)Enum.Parse(typeof(ePageType), Cmd.ReadString("Page_Type"));
             tRateLevel = Cmd.ReadUInt("Rare_Level");
-            tCost = Cmd.ReadInt("Cost");
+            tCost = Cmd.ReadUInt("Cost");
             //tSummonRule = Cmd.ReadInt("Summon_Rule");
             tAbilityList = tAbility.ExchangeAbility(Cmd.ReadString("Ability_List"));
             tExInfo = Bok.BFC.Date.ExchangeExInfo(Cmd.ReadString("Ex_Info"));
@@ -185,9 +185,9 @@ namespace Book
 
     public class tTheOnePage : tPage
     {
-        public int tLife;
-        public int tAtk;
-        public int tAtkMax;
+        public uint tLife;
+        public uint tAtk;
+        public uint tAtkMax;
 
         //空构建
         public tTheOnePage() { }
@@ -197,9 +197,9 @@ namespace Book
         {
             tPageFromDB(PageId, Cmd);
             Cmd.Reading("select * from The_One_Page_V where Page_Id=" + PageId);
-            tLife = Cmd.ReadInt("Life");
-            tAtk = Cmd.ReadInt("Atk");
-            tAtkMax = Cmd.ReadInt("Atk_Max");
+            tLife = Cmd.ReadUInt("Life");
+            tAtk = Cmd.ReadUInt("Atk");
+            tAtkMax = Cmd.ReadUInt("Atk_Max");
         }
     }
 
@@ -237,7 +237,12 @@ namespace Book
 
     public class tTheTimePage : tPage
     {
+        // 埋伏在什么目标上
         public String AttObject;
+        // 是否可见
+        public Boolean Hide;
+        // 能力效果
+        public tAbility Ability;
 
         //空构建
         public tTheTimePage() { }
@@ -250,5 +255,48 @@ namespace Book
             AttObject = Cmd.ReadString("Att_Object");
         }
     }
+
+    /*
+    public class tBuff
+    {
+        public uint tBuffId;
+        public string Name;
+        public string DescLong;
+        public string DescShort;
+
+        public static Dictionary<uint, tBuff> List = new Dictionary<uint, tBuff>();
+        public static void ListFromDB(BookSqlCmd Cmd)
+        {
+            List.Clear();
+            Cmd.Reading("select * from Buff_Type_T", false);
+            while (Cmd.Reading())
+            {
+                tBuff BuffTemp = new tBuff();
+                BuffTemp.tBuffId = Cmd.ReadUInt("Buff_Type_Id");
+                BuffTemp.Name = Cmd.ReadString("Buff_Name");
+                BuffTemp.DescLong = Cmd.ReadString("Desc_Long");
+                BuffTemp.DescShort = Cmd.ReadString("Desc_Short");
+                List.Add(BuffTemp.tBuffId, BuffTemp);
+            }
+        }
+        //根据tBuffId在List里找
+        public static tBuff Find(uint tBuffId)
+        {
+            if (0 == List.Count)
+            {
+                throw new Exception("List not build!");
+            }
+
+            if (List.ContainsKey(tBuffId))
+            {
+                return List[tBuffId];
+            }
+            else
+            {
+                throw new Exception("Can't find BuffId in List!");
+            }
+        }
+
+    } */
 
 } // namespace Book

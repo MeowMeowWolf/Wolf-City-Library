@@ -10,36 +10,32 @@ using System.Reflection;
 
 namespace TEST
 {
-    public class all
+
+    public class A
     {
-
-        public class a
+        //public A()
+        //{ }
+        public A(int abc)
         {
-            public void print()
-            {
-                Console.WriteLine("A");
-            }
+            Console.WriteLine("123");
         }
-        public class b : baseclass
-        {
-            public override void print()
-            {
-                Console.WriteLine("B");
-            }
-        }
-
-        public class baseclass
-        {
-            public virtual void print() { }
-        }
-
-        public void print()
-        {
-            Console.WriteLine("ALL");
-        }
-
     }
 
+    public class B : A
+    {
+        public B()
+        {
+            Console.WriteLine("B");
+        }
+    }
+    public class C : A
+    {
+        public C(int abc) : base(abc)
+        {
+            Console.WriteLine("C");
+        }
+    }
+    
 
     class Program
     {
@@ -60,9 +56,10 @@ namespace TEST
 
         static void Main(string[] args)
         {
-            all.a ab = (all.a)Assembly.GetExecutingAssembly().CreateInstance("TEST.all+a");
+            B b = new B();
+            Console.WriteLine("————————————");
+            C c = new C(123);
 
-            ab.print();
             Console.ReadKey();
         }
     }

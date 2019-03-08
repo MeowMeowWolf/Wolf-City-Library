@@ -1,78 +1,57 @@
-﻿using Bok.DebugLog;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System;
+using Battle.Entity;
+using Battle.Room;
+using Bok.DebugLog;
+using Book;
 
-namespace Mix
+namespace Battle.ASK
 {
-
-    public static class BFC
+    public static class Ask
     {
-        
+        public static GameRoom ParentRoom(object Obj)
+        {
+            switch (Obj.GetType().Name)
+            {
+                case "Camp":
+                    return ((Camp)Obj).ParentRoom;
+                case "Character":
+                    return ((Character)Obj).Camp.ParentRoom;
+                case "iPage":
+                    return ((iPage)Obj).Chr.Camp.ParentRoom; 
+                case "mPage":
+                    return ((mPage)Obj).iPage.Chr.Camp.ParentRoom;
+                case "AnEntity":
+                    return ParentRoom(((AnEntity)Obj).Object);
+                default:
+                    throw (new Exception("ParentRoom，入参Obj非预期的类型"));
+            }
 
-        //public static string Desc(ePageType PageType)
-        //{
-        //    return Enum.GetName(typeof(ePageTypeDesc), (int)PageType);
-        //}
-        //public static string Desc(eRareLevel RareLevel)
-        //{
-        //    return Enum.GetName(typeof(eRareLevelDesc), (int)RareLevel);
-        //}
+        }
 
-        //public static void Print(tPage Page)
-        //{
-        //    Console.WriteLine("——————————————————");
-        //    Console.WriteLine($"PageId = {Page.tPageId}");
-        //    Console.WriteLine($"Page_Name = {Page.tName}");
-        //    Console.WriteLine($"Book = {Page.tBookBelong.tName}");
-        //    Console.WriteLine($"PageType = {Page.PageType.ToString()}");
-        //    Console.WriteLine($"RateLevel = {Page.tRateLevel}");
-        //    Console.WriteLine($"Introduce = {Page.Introduce}");
-        //    //Console.WriteLine($"SummonRule = {Page.tSummonRule}");
-        //    Console.WriteLine($"Cost = {Page.tCost}");
-        //    Console.WriteLine($"AbilityList = {Page.tAbilityList}");
-        //    foreach (string key in Page.tExInfo.Keys)
-        //    { Console.Write($"{key}={Page.tExInfo[key]}|"); }
-        //    Console.WriteLine();
-        //    switch (Page.PageType)
-        //    {
-        //        case ePageType.TheOne:
-        //            tTheOnePage oPage = Page as tTheOnePage;
-        //            Console.WriteLine($"Life = {oPage.tLife}");
-        //            Console.WriteLine($"Atk = {oPage.tAtk}");
-        //            Console.WriteLine($"AtkMax = {oPage.tAtkMax}");
-        //            break;
-        //        case ePageType.ThePlace:
-        //            tThePlacePage pPage = Page as tThePlacePage;
-        //            Console.WriteLine($"Shape = {pPage.tFigure.Shape.ToString()}");
-        //            Console.WriteLine($"SizeX = {pPage.tFigure.SizeX}");
-        //            Console.WriteLine($"SizeY = {pPage.tFigure.SizeY}");
-        //            break;
-        //        case ePageType.TheEvent:
-        //            tTheEventPage ePage = Page as tTheEventPage;
-        //            Console.WriteLine($"ActionObject = {ePage.ActionObject}");
-        //            break;
-        //        case ePageType.TheTime:
-        //            tTheTimePage tPage = Page as tTheTimePage;
-        //            Console.WriteLine($"AttObject = {tPage.AttObject}");
-        //            break;
-        //        default:
-        //            break;
-        //    }
+        public static Boolean Friendly(mPage me, mPage you) //是否为友好目标
+        {
+            if (ASK.Ask.ParentRoom(me) != ASK.Ask.ParentRoom(you))
+            { throw new Exception("都不在一个房间里，你搞毛啊！"); }
 
-        //    Console.WriteLine("——————————————————");
-        //}
-    }
-
-    public class Touch
-    {
-        // [j-judge-判断]
+            switch (you.iPage.Chr.Camp.SP)
+            {
+                case 1:
+                    return true;
+                case -1:
+                    return false;
+                default:
+                    if (me.iPage.Chr.Camp == you.iPage.Chr.Camp)
+                    { return true; }
+                    else
+                    { return false; }
+            }
+        }
 
 
-        public static Boolean jAtkable(mTheOne me, mTheOne you) //我可以攻击你吗
+        public static Boolean jAtkable(Entity.mTheOne me, mTheOne you) //我可以攻击你吗
         {
             if (you == null) { return false; }
-            if (BFC.ParentRoom(me) != BFC.ParentRoom(you))
+            if (ParentRoom(me) != ASK.Ask.ParentRoom(you))
             { throw new Exception("你是隔壁老王？"); }
 
             if (me.Alive == false)
@@ -85,13 +64,13 @@ namespace Mix
             if (gAtkDistance(me) < gDistance(me, you))
             { return false; }
 
-            if (jFriendly(me, you))
+            if (Friendly(me, you))
             { return false; }
             //buff判断
             return true;
         }
 
-        public static Boolean jAtkable(mTheOne me) //我可以发起攻击吗
+        public static Boolean jAtkable(Entity.mTheOne me) //我可以发起攻击吗
         {
             if (me == null)
             { return false; }
@@ -141,71 +120,70 @@ namespace Mix
 
         public static float gDistance(mPage me, mPage you)
         {
-            if (BFC.ParentRoom(me) != BFC.ParentRoom(you))
+            if (ASK.Ask.ParentRoom(me) != ASK.Ask.ParentRoom(you))
             { throw new Exception("世界上最遥远的距离，是我在这里，你在隔壁"); }
 
             return gDistance(me.Position, you.Position);
         }
 
-        public static int gAtkDistance(mTheOne one)
+        public static uint gAtkDistance(mTheOne one)
         {
             //还要考虑buff，待完善
-            return BFC.ParentRoom(one).Param.AtkDistance;
+            return ASK.Ask.ParentRoom(one).Param.AtkDistance;
         }
 
-        public static int gAtkPoints(mTheOne one)
+        public static uint gAtkPoints(mTheOne one)
         {
             //还要考虑buff，待完善
             return one.mAtk;
         }
 
-        public static int gTimeDifMs(DateTime t1, DateTime t2)
+        public static uint gTimeDifMs(DateTime t1, DateTime t2)
         {
             TimeSpan t3 = t1 - t2;
             double dif = t3.TotalMilliseconds;
-            int Dif = Convert.ToInt32(dif);
-            return Dif;
+            return Convert.ToUInt32(dif);
         }
 
         // [a-action-行为]
         public static Boolean aSummon(iTheOnePage Page, XY seat)
         {
-            if (!jSeatAccessible( BFC.ParentRoom(Page), Page.PageType, seat))
+            if (!jSeatAccessible(ASK.Ask.ParentRoom(Page), Page.PageType, seat))
             { return false; }
 
             mTheOne TheOne = new mTheOne(Page);
             TheOne.iPage = Page;
-            TheOne.ModeId = BFC.ParentRoom(TheOne).Sequence();
+            TheOne.ModeId = ASK.Ask.ParentRoom(TheOne).Sequence();
             TheOne.Alive = true;
-            BFC.ParentRoom(TheOne).RoomOneList.Add(TheOne.ModeId, TheOne);
+            ASK.Ask.ParentRoom(TheOne).RoomOneList.Add(TheOne.ModeId, TheOne);
             aIntoMap(TheOne, seat);
 
-            BFC.ParentRoom(TheOne).AutoAtk.Add(TheOne);
-            LogCenter.Push(new DebugInfo(10,"Info", $"[{Page.Chr.Name}]召唤了<{Page.iName}>"));
+            ASK.Ask.ParentRoom(TheOne).AutoAtk.Add(TheOne);
+            LogCenter.Push(new DebugInfo(10, "Info", $"[{Page.Chr.Name}]召唤了<{Page.iName}>"));
             Console.WriteLine($"[{Page.Chr.Name}]召唤了<{Page.iName}>");
             return true;
         }
-        
+
         public static void aIntoMap(mPage thing, XY seat)
         {
-            BFC.ParentRoom(thing).Map[seat.X, seat.Y, (int)thing.ModeType] = thing;
+            ASK.Ask.ParentRoom(thing).Map[seat.X, seat.Y, (int)thing.ModeType] = thing;
             thing.Position = seat;
         }
 
         public static void aLeaveMap(mPage thing)
         {
-            BFC.ParentRoom(thing).Map[thing.Position.X, thing.Position.Y, (int)thing.ModeType] = null;
+            ASK.Ask.ParentRoom(thing).Map[thing.Position.X, thing.Position.Y, (int)thing.ModeType] = null;
             thing.Position.Clean();
         }
 
         public static void aMovePosition(mPage thing, XY NewSeat)
         {
-            if( !jSeatAccessible(BFC.ParentRoom(thing), thing.ModeType, NewSeat))
+            if (!jSeatAccessible(ASK.Ask.ParentRoom(thing), thing.ModeType, NewSeat))
             { throw new Exception("非法移民！遣送出境！"); }
 
-            BFC.ParentRoom(thing).Map[thing.Position.X, thing.Position.Y, (int)thing.ModeType] = null;
+            ASK.Ask.ParentRoom(thing).Map[thing.Position.X, thing.Position.Y, (int)thing.ModeType] = null;
             thing.Position = NewSeat;
-            BFC.ParentRoom(thing).Map[NewSeat.X, NewSeat.Y, (int)thing.ModeType] = thing;
+            ASK.Ask.ParentRoom(thing).Map[NewSeat.X, NewSeat.Y, (int)thing.ModeType] = thing;
         }
 
         public static void aAtk(mTheOne Attacker, mTheOne Casualty)
@@ -222,7 +200,7 @@ namespace Mix
             }
         }
 
-        public static void aLoseLifePoints(mTheOne Casualty, int Points)
+        public static void aLoseLifePoints(mTheOne Casualty, uint Points)
         {
             if (Casualty.Alive == true)
             {
@@ -238,15 +216,15 @@ namespace Mix
         // [s-settlement-结算]
         public static void sDeath(mTheOne TheOne)
         {
-            BFC.ParentRoom(TheOne).AutoAtk.Remove(TheOne);
+            ASK.Ask.ParentRoom(TheOne).AutoAtk.Remove(TheOne);
             TheOne.mBuff.Clear();
             TheOne.Alive = false;
             aLeaveMap(TheOne);
-            BFC.ParentRoom(TheOne).RoomOneList.Remove(TheOne.ModeId);
+            ASK.Ask.ParentRoom(TheOne).RoomOneList.Remove(TheOne.ModeId);
             Console.WriteLine($"[{TheOne.iPage.Chr.Name}]的<{TheOne.mName}>挂了");
             // iPage 的处理
         }
 
+    } // class Ask
 
-    }
-}
+}// namespace ASK
