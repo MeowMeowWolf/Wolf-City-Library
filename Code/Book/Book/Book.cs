@@ -14,6 +14,7 @@ namespace Book
         public static Dictionary<uint, tBook> List = new Dictionary<uint, tBook>();
         public static void ListFromDB(BookSqlCmd Cmd)
         {
+            Bok.DebugLog.LogCenter.Push(2, 0, $"从数据库加载Book列表，开始。");
             List.Clear();
             Cmd.Reading("select * from Book_T", false);
             while (Cmd.Reading())
@@ -23,7 +24,10 @@ namespace Book
                 BookTemp.BookName = Cmd.ReadString("Book_Name");
                 BookTemp.Introduce = Cmd.ReadString("Introduce");
                 List.Add(BookTemp.BookId, BookTemp);
+                Bok.DebugLog.LogCenter.Push(12, 0, $"BookId={BookTemp.BookId}，BookName={BookTemp.BookName}。");
             }
+            Bok.DebugLog.LogCenter.Push(2, 0, $"从数据库加载Book列表，完毕。");
+
         }
     }
 
@@ -66,6 +70,7 @@ namespace Book
         public static Dictionary<uint, tAbility> List = new Dictionary<uint, tAbility>();
         public static void ListFromDB(BookSqlCmd Cmd)
         {
+            Bok.DebugLog.LogCenter.Push(2, 0, $"从数据库加载Ability列表，开始。");
             List.Clear();
             Cmd.Reading("select * from Ability_T", false);
             while (Cmd.Reading())
@@ -77,7 +82,9 @@ namespace Book
                 abiInfo.DescShort = Cmd.ReadString("Desc_Short");
                 abiInfo.DescLong = Cmd.ReadString("Desc_Long");
                 List.Add(abiInfo.AbilityId, abiInfo);
+                Bok.DebugLog.LogCenter.Push(12, 0, $"AbilityId={abiInfo.AbilityId}，Name={abiInfo.Name}。");
             }
+            Bok.DebugLog.LogCenter.Push(2, 0, $"从数据库加载Ability列表，完毕。");
         }
 
         public static List<tAbility> ExchangeAbility(string inString)
@@ -153,6 +160,7 @@ namespace Book
 
         public static void ListFromDB(BookSqlCmd Cmd)
         {
+            Bok.DebugLog.LogCenter.Push(2, 0, $"从数据库加载Page列表，开始。");
             List.Clear();
             Dictionary<string, string> list = Cmd.ReadList("All_Page_T", "Page_Id", "Page_Type");
             foreach (string BookId in list.Keys)
@@ -176,7 +184,9 @@ namespace Book
                         List.Add(TheTimePage.tPageId, TheTimePage);
                         break;
                 }
+                Bok.DebugLog.LogCenter.Push(12, 0, $"导入BookId=BookId");
             }
+            Bok.DebugLog.LogCenter.Push(2, 0, $"从数据库加载Page列表，完毕");
         }
 
 

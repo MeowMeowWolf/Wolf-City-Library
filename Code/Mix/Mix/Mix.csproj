@@ -32,9 +32,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Battle, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Run\Battle.dll</HintPath>
+    </Reference>
     <Reference Include="Bok, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Run\Bok.dll</HintPath>
+    </Reference>
+    <Reference Include="Book, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Run\Book.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -51,9 +59,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbilityLib.cs" />
-    <Compile Include="Settlement.cs" />
-    <Compile Include="Touch.cs" />
     <Compile Include="Mix.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

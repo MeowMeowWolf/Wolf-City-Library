@@ -1,0 +1,7 @@
+E:\GitHub\WolfCityLibrary\Code\Run\Battle.dll
+E:\GitHub\WolfCityLibrary\Code\Run\Battle.pdb
+E:\GitHub\WolfCityLibrary\Code\Battle\Battle\obj\Debug\Battle.csprojAssemblyReference.cache
+E:\GitHub\WolfCityLibrary\Code\Battle\Battle\obj\Debug\Battle.csproj.CoreCompileInputs.cache
+E:\GitHub\WolfCityLibrary\Code\Battle\Battle\obj\Debug\Battle.csproj.CopyComplete
+E:\GitHub\WolfCityLibrary\Code\Battle\Battle\obj\Debug\Battle.dll
+E:\GitHub\WolfCityLibrary\Code\Battle\Battle\obj\Debug\Battle.pdb

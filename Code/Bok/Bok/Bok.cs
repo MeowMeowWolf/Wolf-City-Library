@@ -24,8 +24,8 @@ namespace Bok
             public static uint paramMaxLevel;  // 最大日志级别
             private static uint paramMaxLine;  // 日志文件最大行数
 
-            private static uint paramShortSleepTime;  // 短休眠时间(毫秒)
-            private static uint paramLongSleepCount;  // 进入长休眠所需的短次数
+            private static uint paramSleepTime;  // 短休眠时间(毫秒)
+            private static uint paramSleepCount;  // 进入长休眠所需的短次数
 
             private static Boolean isParam = false;
 
@@ -58,11 +58,11 @@ namespace Bok
                     CreatePathFile(paramFilePath, paramFileNameHead + paramFileNameTail);
 
                     paramMinLevel = 0;
-                    paramMaxLevel = 100;
+                    paramMaxLevel = 10;
                     paramMaxLine = MaxLine;
 
-                    paramShortSleepTime = ShortSleepTime;
-                    paramLongSleepCount = LongSleepCount;
+                    paramSleepTime = ShortSleepTime;
+                    paramSleepCount = LongSleepCount;
 
                     isParam = true;
                 }
@@ -82,12 +82,27 @@ namespace Bok
                     }
                 }
             }
+            public static void Push(uint level,uint debugtype,string text)
+            {
+                DebugInfo info = new DebugInfo(level, (eDebugType)debugtype, text);
+                if (paramMinLevel <= info.DebugLevel && info.DebugLevel <= paramMaxLevel)
+                {
+                    info.ThreadNum = System.Threading.Thread.CurrentThread.ManagedThreadId;
+                    DebugList.Enqueue(info);
+                    if (WorkState == eWorkState.LongSleep)
+                    {
+                        WorkState = eWorkState.Work;
+                        Task task = new Task(Writing);
+                        task.Start();
+                    }
+                }
+            }
             /*执行日志输出*/
             private static void Writing()
             {
                 uint SleepCount = 0;
                 StreamWriter writer = new StreamWriter(paramFilePath + paramFileNameHead + paramFileNameTail, true);
-                while (SleepCount < paramLongSleepCount)
+                while (SleepCount <= paramSleepCount)
                 {
                     switch (WorkState)
                     {
@@ -108,7 +123,7 @@ namespace Bok
                             if (DebugList.Count == 0)
                             {
                                 // 短眠，没日志包，继续睡一会儿
-                                System.Threading.Thread.Sleep((int)paramShortSleepTime);
+                                System.Threading.Thread.Sleep((int)paramSleepTime);
                                 SleepCount++;
                                 break;
                             }
@@ -123,13 +138,13 @@ namespace Bok
                             if (DebugList.Count == 0)
                             {
                                 // 暂停，不管有没有日志包，不计入短眠次数
-                                System.Threading.Thread.Sleep((int)paramShortSleepTime);
+                                System.Threading.Thread.Sleep((int)paramSleepTime);
                                 break;
                             }
                             else
                             {
                                 // 暂停，不管有没有日志包，不计入短眠次数
-                                System.Threading.Thread.Sleep((int)paramShortSleepTime);
+                                System.Threading.Thread.Sleep((int)paramSleepTime);
                                 break;
                             }
                         case eWorkState.Work:
@@ -195,9 +210,8 @@ namespace Bok
             public static string DebugFormat(DebugInfo debugInfo)
             {
                 string debugPack = debugInfo.DebugTime.ToString("<yyyy-MM-dd HH:mm:ss:fff>");
-                debugPack = debugPack + "[" + debugInfo.DebugLevel + "]";
                 debugPack = debugPack + "[" + ProcessNum + "·" + debugInfo.ThreadNum + "]";
-                debugPack = debugPack + "|" + debugInfo.DebugType.ToString() + ">";
+                debugPack = debugPack + "|" + debugInfo.DebugType.ToString() + "·" + debugInfo.DebugLevel + "| ";
                 debugPack = debugPack + debugInfo.DebugText;
                 return debugPack;
             }
@@ -246,7 +260,6 @@ namespace Bok
                 DebugType = (eDebugType)Enum.Parse(typeof(eDebugType), debugType);
                 DebugText = debugText;
             }
-
         }
         
     } // namespace DebugLog
@@ -695,6 +708,7 @@ namespace Bok
                 db_conn.Open();
                 if (Check(db_conn))
                 {
+                    DebugLog.LogCenter.Push(2, 0, $"连接明文数据库<{db_name}>");
                     return db_conn;
                 }
                 else
@@ -711,6 +725,7 @@ namespace Bok
                 db_conn.Open();
                 if (Check(db_conn))
                 {
+                    DebugLog.LogCenter.Push(2, 0, $"连接加密数据库<{db_name}>");
                     return db_conn;
                 }
                 else
@@ -761,6 +776,7 @@ namespace Bok
             //构造执行器时，连接到不带密码数据库
             public BookSqlCmd(string db_name)
             {
+                DebugLog.LogCenter.Push(2, 0, $"连接到明文数据库<{db_name}>");
                 Connection = new SQLiteConnection("Data Source=" + db_name);
                 Connection.Open();
                 Command = new SQLiteCommand(Connection);
@@ -768,6 +784,7 @@ namespace Bok
             //构造执行器时，连接到带有密码数据库
             public BookSqlCmd(string db_name, string password)
             {
+                DebugLog.LogCenter.Push(2, 0, $"连接到密文数据库<{db_name}>");
                 Connection = new SQLiteConnection("Data Source=" + db_name);
                 Connection.SetPassword(password);
                 Connection.Open();
@@ -799,6 +816,7 @@ namespace Bok
             //非查询命令
             public void NonQuery(string CommandText)
             {
+                DebugLog.LogCenter.Push(12, 0, $"执行Sql：{CommandText}");
                 if (Reader != null) { Reader.Close(); }
                 Command.CommandText = CommandText;
                 Command.ExecuteNonQuery();
@@ -807,6 +825,7 @@ namespace Bok
             //查询命令（是否自动执行.Read()）
             public void Reading(string CommandText, Boolean isRead)
             {
+                DebugLog.LogCenter.Push(12, 0, $"Sql查询：{CommandText}");
                 if (Reader != null) { Reader.Close(); }
                 Command.CommandText = CommandText;
                 Reader = Command.ExecuteReader();
@@ -815,6 +834,7 @@ namespace Bok
             //查询命令（默认自动执行.Read()）
             public void Reading(string CommandText)
             {
+                DebugLog.LogCenter.Push(12, 0, $"Sql查询：{CommandText}");
                 if (Reader != null) { Reader.Close(); }
                 Command.CommandText = CommandText;
                 Reader = Command.ExecuteReader();
@@ -926,6 +946,7 @@ namespace Bok
                 //{
                 // className中，类中类中+号代替.号
                 string fullName = nameSpace + "." + className;
+                DebugLog.LogCenter.Push(5,0, "CreateInstance:"+fullName);
                 object obj = Assembly.GetExecutingAssembly().CreateInstance(fullName, true, System.Reflection.BindingFlags.Default, null, parameters, null, null);//加载程序集，创建程序集里面的 命名空间.类型名 实例
                 return (T)obj;
                 //}

@@ -33,6 +33,7 @@ namespace Battle.Room
             UnitTime = 40;//单位时间为40毫秒，每秒钟25个单位时间
             AtkInterval = 3000;
             AtkDistance = 5;
+            Bok.DebugLog.LogCenter.Push(1, 0, $"游戏空间参数配置完毕。");
         }
     }
 
@@ -62,24 +63,16 @@ namespace Battle.Room
         public Dictionary<uint, Entity.iPage> RoomPageList;//全卡牌列表
         public Dictionary<uint, Entity.mTheOne> RoomOneList;//全生灵列表
         public Dictionary<uint, Entity.mThePlace> RoomPlaceList;//全环境列表
-                                                                //应该不太需要吧 public Dictionary<int, Buff> RoomBuffList;//全buff列表
+        //应该不太需要吧 public Dictionary<int, Buff> RoomBuffList;//全buff列表
         public Dictionary<uint, List<ABI.Ability>> ToBeTriggered;
-        //public List<ABI.Ability> Pend2Response; // 在注册的待响应效果列表 (作废，有空再删除)
 
         public GameRoom()
         {
-            Param = new RoomParam();
+            Bok.DebugLog.LogCenter.Push(1, 0, $"开始创建游戏空间。");
+            Param = new RoomParam(0);
             sequence = 1;
 
-            BeginTime = DateTime.Now;
-            Timer = new System.Timers.Timer(Param.UnitTime);
-            AutoAtk = new AutoAtkTimer(this);
-            Timer.Elapsed += new System.Timers.ElapsedEventHandler(AutoAtk.Doing);
-            Timer.AutoReset = true;
-            Timer.Start();
-
             Map = new Entity.mPage[Param.MapSize.X, Param.MapSize.Y, (int)Entity.eModeType.EnumCount];
-
             RoomCampList = new Dictionary<uint, Camp>();
             RoomChrList = new Dictionary<uint, Character>();
             RoomPageList = new Dictionary<uint, Entity.iPage>();
@@ -88,8 +81,18 @@ namespace Battle.Room
             ToBeTriggered = new Dictionary<uint, List<ABI.Ability>>();
             for (uint i = 0; i < (uint)Setl.eEventType.Max; i++)
             {
-                ToBeTriggered.Add(i,new List<ABI.Ability>());
+                ToBeTriggered.Add(i, new List<ABI.Ability>());
             }
+            Bok.DebugLog.LogCenter.Push(1, 0, $"各项列表初始化完毕。");
+
+
+            BeginTime = DateTime.Now;
+            Timer = new System.Timers.Timer(Param.UnitTime);
+            AutoAtk = new AutoAtkTimer(this);
+            Timer.Elapsed += new System.Timers.ElapsedEventHandler(AutoAtk.Doing);
+            Timer.AutoReset = true;
+            Timer.Start();
+            Bok.DebugLog.LogCenter.Push(1, 0, $"自动攻击策略配置完毕。");
         }
     }
 
@@ -100,14 +103,17 @@ namespace Battle.Room
         public Dictionary<uint, AutoOne> AutoOneList;
         public void Doing(object sender, System.Timers.ElapsedEventArgs e)
         {
+            Bok.DebugLog.LogCenter.Push(13, 0, $"新一轮自动攻击就绪。");
             if (WorkState == false)
             {
                 WorkState = true;
                 List<AutoOne> AutoOneListTemp = AutoOneList.Values.ToList();
                 foreach (AutoOne One in AutoOneListTemp)
                 {
-                    if (ASK.Ask.gTimeDifMs(ParentRoom.TimeNow(), One.LastAtkTime) >= ParentRoom.Param.AtkInterval)
+                    Bok.DebugLog.LogCenter.Push(13, 0, $"判断[{One.Me.mName}]是否符合攻击条件。");
+                    if (ASK.Other.gTimeDifMs(ParentRoom.TimeNow(), One.LastAtkTime) >= ParentRoom.Param.AtkInterval)
                     {
+                        Bok.DebugLog.LogCenter.Push(13, 0, $"[{One.Me.mName}]符合攻击条件。");
                         One.TryAtk();
                         One.LastAtkTime = ParentRoom.TimeNow();
                     }
@@ -125,7 +131,8 @@ namespace Battle.Room
 
         public void Add(Entity.mTheOne One)
         {
-            if (ParentRoom != ASK.Ask.ParentRoom(One))
+            Bok.DebugLog.LogCenter.Push(9, 0, $"{One.mName}添加自动攻击。");
+            if (ParentRoom != ASK.Room.ParentRoom(One))
             { throw new Exception("这里不是你该来的地方"); }
 
             AutoOneList.Add(One.ModeId, new AutoOne(One));
@@ -145,10 +152,11 @@ namespace Battle.Room
 
             void FindTarget()
             {
-                List<Entity.mTheOne> ValuesListTemp = ASK.Ask.ParentRoom(Me).RoomOneList.Values.ToList();
+                Bok.DebugLog.LogCenter.Push(9, 0, $"{Me.mName}寻找攻击对象。");
+                List<Entity.mTheOne> ValuesListTemp = ASK.Room.ParentRoom(Me).RoomOneList.Values.ToList();
                 foreach (Entity.mTheOne you in ValuesListTemp)
                 {
-                    if (ASK.Ask.jAtkable(Me, you))
+                    if (ASK.Other.jAtkable(Me, you))
                     {
                         Target = you;
                     }
@@ -157,17 +165,18 @@ namespace Battle.Room
 
             public void TryAtk()
             {
+                Bok.DebugLog.LogCenter.Push(9,0,$"[{Me.mName}]准备攻击。");
                 if (Me.Alive && Continue)
                 {
-                    if (ASK.Ask.jAtkable(Me))
+                    if (ASK.Other.jAtkable(Me))
                     {
                         if (Target == null)
                         { FindTarget(); }
-                        if (!ASK.Ask.jAtkable(Me, Target))
+                        if (!ASK.Other.jAtkable(Me, Target))
                         { FindTarget(); }
-                        if (ASK.Ask.jAtkable(Me, Target))
+                        if (ASK.Other.jAtkable(Me, Target))
                         {
-                            Launch.TheOne.LaunchAttack(Me, Target);
+                            Launch.TheOne.Attack(Me, Target);
                         }
                     }
                 }
@@ -175,8 +184,9 @@ namespace Battle.Room
 
             public AutoOne(Entity.mTheOne one)
             {
+                Bok.DebugLog.LogCenter.Push(9, 0, $"自动攻击初始化。");
                 Me = one;
-                LastAtkTime = ASK.Ask.ParentRoom(Me).TimeNow();
+                LastAtkTime = ASK.Room.ParentRoom(Me).TimeNow();
                 Continue = true;
             }
 
@@ -200,13 +210,13 @@ namespace Battle.Room
             Id = ParentRoom.Sequence(); Name = name; SP = sp;
             ParentRoom.RoomCampList.Add(Id, this);
         }
-        public static void Create2Room(GameRoom room, string name, int sp)
-        {
-            Camp NewCamp = new Camp();
-            NewCamp.ParentRoom = room;
-            NewCamp.Id = NewCamp.ParentRoom.Sequence(); NewCamp.Name = name; NewCamp.SP = sp;
-            NewCamp.ParentRoom.RoomCampList.Add(NewCamp.Id, NewCamp);
-        }
+        //public static void Create2Room(GameRoom room, string name, int sp)
+        //{
+        //    Camp NewCamp = new Camp();
+        //    NewCamp.ParentRoom = room;
+        //    NewCamp.Id = NewCamp.ParentRoom.Sequence(); NewCamp.Name = name; NewCamp.SP = sp;
+        //    NewCamp.ParentRoom.RoomCampList.Add(NewCamp.Id, NewCamp);
+        //}
     }
 
     public class Character
@@ -219,10 +229,10 @@ namespace Battle.Room
         public Character(Camp camp, string name, Boolean playable)
         {
             Camp = camp;
-            Id = ASK.Ask.ParentRoom(Camp).Sequence();
+            Id = ASK.Room.ParentRoom(Camp).Sequence();
             Name = name;
             Playable = playable;
-            ASK.Ask.ParentRoom(Camp).RoomChrList.Add(Id, this);
+            ASK.Room.ParentRoom(Camp).RoomChrList.Add(Id, this);
         }
 
         public void LoadMyBook(BookSqlCmd Cmd, uint MyBook)

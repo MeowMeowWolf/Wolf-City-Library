@@ -6,18 +6,48 @@ using Book;
 
 namespace Battle.ASK
 {
-    public static class Ask
+    public static class Room
     {
+        public static GameRoom ParentRoom(Camp Obj)
+        {
+            return Obj.ParentRoom;
+        }
+        public static GameRoom ParentRoom(Character Obj)
+        {
+            return Obj.Camp.ParentRoom;
+        }
+        public static GameRoom ParentRoom(iPage Obj)
+        {
+            return Obj.Chr.Camp.ParentRoom;
+        }
+        public static GameRoom ParentRoom(mPage Obj)
+        {
+            return Obj.iPage.Chr.Camp.ParentRoom;
+        }
+        public static GameRoom ParentRoom(AnEntity Obj)
+        {
+            switch (Obj.EntityType)
+            {
+                case eEntityType.iPage:
+                    return ParentRoom(Obj.Object as iPage);
+                case eEntityType.mPage:
+                    return ParentRoom(Obj.Object as mPage);
+                case eEntityType.mTheOne:
+                    return ParentRoom(Obj.Object as mTheOne);
+                case eEntityType.mThePlace:
+                    return ParentRoom(Obj.Object as mThePlace);
+                default:
+                    throw (new Exception("惹，还有其他类型的吗？"));
+            }
+        }
+
         public static GameRoom ParentRoom(object Obj)
         {
             switch (Obj.GetType().Name)
             {
-                case "Camp":
-                    return ((Camp)Obj).ParentRoom;
-                case "Character":
-                    return ((Character)Obj).Camp.ParentRoom;
+
                 case "iPage":
-                    return ((iPage)Obj).Chr.Camp.ParentRoom; 
+                    return ((iPage)Obj).Chr.Camp.ParentRoom;
                 case "mPage":
                     return ((mPage)Obj).iPage.Chr.Camp.ParentRoom;
                 case "AnEntity":
@@ -25,13 +55,40 @@ namespace Battle.ASK
                 default:
                     throw (new Exception("ParentRoom，入参Obj非预期的类型"));
             }
-
         }
 
+    }// Room
+
+    public static class Map
+    {
+        //对象能否进入某位置
+        public static Boolean jSeatAccessible(GameRoom room, eModeType type, XY seat)
+        {
+            if (room.Param.MapSize.X > seat.X)
+            { return false; }
+            if (room.Param.MapSize.Y > seat.Y)
+            { return false; }
+
+            if (room.Map[seat.X, seat.Y, (int)type] != null)
+            { return false; }
+
+            return true;
+        }
+
+        //某类卡牌能否进入某位置
+        public static Boolean jSeatAccessible(GameRoom room, ePageType pageType, XY seat)
+        {
+            eModeType ThingType = (eModeType)Enum.Parse(typeof(eModeType), pageType.ToString());
+            return jSeatAccessible(room, ThingType, seat);
+        }
+    }
+
+    public static class Relation
+    {
         public static Boolean Friendly(mPage me, mPage you) //是否为友好目标
         {
-            if (ASK.Ask.ParentRoom(me) != ASK.Ask.ParentRoom(you))
-            { throw new Exception("都不在一个房间里，你搞毛啊！"); }
+            if (Room.ParentRoom(me) != Room.ParentRoom(you))
+            { throw new Exception("都不在一个房间里，搞毛啊！"); }
 
             switch (you.iPage.Chr.Camp.SP)
             {
@@ -47,11 +104,14 @@ namespace Battle.ASK
             }
         }
 
+    }// Relation
 
+    public static class Other
+    {
         public static Boolean jAtkable(Entity.mTheOne me, mTheOne you) //我可以攻击你吗
         {
             if (you == null) { return false; }
-            if (ParentRoom(me) != ASK.Ask.ParentRoom(you))
+            if (Room.ParentRoom(me) != Room.ParentRoom(you))
             { throw new Exception("你是隔壁老王？"); }
 
             if (me.Alive == false)
@@ -64,7 +124,7 @@ namespace Battle.ASK
             if (gAtkDistance(me) < gDistance(me, you))
             { return false; }
 
-            if (Friendly(me, you))
+            if (Relation.Friendly(me, you))
             { return false; }
             //buff判断
             return true;
@@ -80,32 +140,8 @@ namespace Battle.ASK
             return true;
         }
 
-        public static Boolean jSeatAccessible(GameRoom room, eModeType type, XY seat) //对象能否进入某位置
-        {
-            if (room.Param.MapSize.X > seat.X)
-            { return false; }
-            if (room.Param.MapSize.Y > seat.Y)
-            { return false; }
 
-            if (room.Map[seat.X, seat.Y, (int)type] != null)
-            { return false; }
-
-            return true;
-        }
-
-        public static Boolean jSeatAccessible(GameRoom room, ePageType PageType, XY seat) //某类卡牌能否进入某位置
-        {
-            if (room.Param.MapSize.X < seat.X || seat.X < 0)
-            { return false; }
-            if (room.Param.MapSize.Y < seat.Y || seat.Y < 0)
-            { return false; }
-
-            eModeType ThingType = (eModeType)Enum.Parse(typeof(eModeType), PageType.ToString());
-            if (room.Map[seat.X, seat.Y, (int)ThingType] != null)
-            { return false; }
-
-            return true;
-        }
+        
 
         // [g-get-获取]
         public static float gDistance(XY me, XY you)
@@ -120,7 +156,7 @@ namespace Battle.ASK
 
         public static float gDistance(mPage me, mPage you)
         {
-            if (ASK.Ask.ParentRoom(me) != ASK.Ask.ParentRoom(you))
+            if (Room.ParentRoom(me) != Room.ParentRoom(you))
             { throw new Exception("世界上最遥远的距离，是我在这里，你在隔壁"); }
 
             return gDistance(me.Position, you.Position);
@@ -129,7 +165,7 @@ namespace Battle.ASK
         public static uint gAtkDistance(mTheOne one)
         {
             //还要考虑buff，待完善
-            return ASK.Ask.ParentRoom(one).Param.AtkDistance;
+            return Room.ParentRoom(one).Param.AtkDistance;
         }
 
         public static uint gAtkPoints(mTheOne one)
@@ -146,85 +182,21 @@ namespace Battle.ASK
         }
 
         // [a-action-行为]
-        public static Boolean aSummon(iTheOnePage Page, XY seat)
-        {
-            if (!jSeatAccessible(ASK.Ask.ParentRoom(Page), Page.PageType, seat))
-            { return false; }
+        
 
-            mTheOne TheOne = new mTheOne(Page);
-            TheOne.iPage = Page;
-            TheOne.ModeId = ASK.Ask.ParentRoom(TheOne).Sequence();
-            TheOne.Alive = true;
-            ASK.Ask.ParentRoom(TheOne).RoomOneList.Add(TheOne.ModeId, TheOne);
-            aIntoMap(TheOne, seat);
-
-            ASK.Ask.ParentRoom(TheOne).AutoAtk.Add(TheOne);
-            LogCenter.Push(new DebugInfo(10, "Info", $"[{Page.Chr.Name}]召唤了<{Page.iName}>"));
-            Console.WriteLine($"[{Page.Chr.Name}]召唤了<{Page.iName}>");
-            return true;
-        }
-
-        public static void aIntoMap(mPage thing, XY seat)
-        {
-            ASK.Ask.ParentRoom(thing).Map[seat.X, seat.Y, (int)thing.ModeType] = thing;
-            thing.Position = seat;
-        }
-
-        public static void aLeaveMap(mPage thing)
-        {
-            ASK.Ask.ParentRoom(thing).Map[thing.Position.X, thing.Position.Y, (int)thing.ModeType] = null;
-            thing.Position.Clean();
-        }
 
         public static void aMovePosition(mPage thing, XY NewSeat)
         {
-            if (!jSeatAccessible(ASK.Ask.ParentRoom(thing), thing.ModeType, NewSeat))
+            if (!ASK.Map.jSeatAccessible(Room.ParentRoom(thing), thing.ModeType, NewSeat))
             { throw new Exception("非法移民！遣送出境！"); }
 
-            ASK.Ask.ParentRoom(thing).Map[thing.Position.X, thing.Position.Y, (int)thing.ModeType] = null;
+            Room.ParentRoom(thing).Map[thing.Position.X, thing.Position.Y, (int)thing.ModeType] = null;
             thing.Position = NewSeat;
-            ASK.Ask.ParentRoom(thing).Map[NewSeat.X, NewSeat.Y, (int)thing.ModeType] = thing;
+            Room.ParentRoom(thing).Map[NewSeat.X, NewSeat.Y, (int)thing.ModeType] = thing;
         }
 
-        public static void aAtk(mTheOne Attacker, mTheOne Casualty)
-        {
-            if (Attacker.Alive == true)
-            {
-                Casualty.mLife = Math.Max(0, (Casualty.mLife - Attacker.mAtk));
-                Console.WriteLine($"[{Attacker.iPage.Chr.Name}]的<{Attacker.mName}>对[{Casualty.iPage.Chr.Name}]的<{Casualty.mName}>造成{Attacker.mAtk}点伤害");
-                Console.WriteLine($"[{Casualty.iPage.Chr.Name}]的<{Casualty.mName}>剩余血量：{Casualty.mLife}");
-                if (Casualty.mLife <= 0)
-                {
-                    sDeath(Casualty);
-                }
-            }
-        }
+        
 
-        public static void aLoseLifePoints(mTheOne Casualty, uint Points)
-        {
-            if (Casualty.Alive == true)
-            {
-                Casualty.mLife = Math.Max(0, (Casualty.mLife - Points));
-                Console.WriteLine($"[{Casualty.iPage.Chr.Name}]的<{Casualty.mName}>失去{Points}点生命值，剩余{Casualty.mLife}点生命值。");
-                if (Casualty.mLife <= 0)
-                {
-                    sDeath(Casualty);
-                }
-            }
-        }
-
-        // [s-settlement-结算]
-        public static void sDeath(mTheOne TheOne)
-        {
-            ASK.Ask.ParentRoom(TheOne).AutoAtk.Remove(TheOne);
-            TheOne.mBuff.Clear();
-            TheOne.Alive = false;
-            aLeaveMap(TheOne);
-            ASK.Ask.ParentRoom(TheOne).RoomOneList.Remove(TheOne.ModeId);
-            Console.WriteLine($"[{TheOne.iPage.Chr.Name}]的<{TheOne.mName}>挂了");
-            // iPage 的处理
-        }
-
-    } // class Ask
+    } // Other
 
 }// namespace ASK

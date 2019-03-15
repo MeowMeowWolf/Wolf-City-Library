@@ -2,6 +2,7 @@
 using Battle.Entity;
 using Battle.Setl;
 using Book;
+using Bok.DebugLog;
 
 namespace Battle.ABI
 {
@@ -37,10 +38,17 @@ namespace Battle.ABI
 
     public class Func
     {
+        public static T CreateInstance<T>(string nameSpace, string className, object[] parameters)
+        {
+            string fullName = nameSpace + "." + className;
+            object obj = System.Reflection.Assembly.GetExecutingAssembly().CreateInstance(fullName, true, System.Reflection.BindingFlags.Default, null, parameters, null, null);//加载程序集，创建程序集里面的 命名空间.类型名 实例
+            return (T)obj;
+        }
+
         public static Ability Create(uint abiTypeId, object[] Parameters)
         {
             tAbility info = tAbility.List[abiTypeId];
-            Ability ability = Bok.BFC.Factory.CreateInstance<Ability>("ABI.Skill", info.AbiCode, Parameters);
+            Ability ability = CreateInstance<Ability>("Battle.ABI.Skill", "a"+info.AbiCode, Parameters);
             if (ability == null) { throw (new Exception("能力实例化失败")); }
             ability.AbiInfo = info;
             ability.Init();
@@ -66,7 +74,7 @@ namespace Battle.ABI
                     break;
             }
             ability.Alive = true;
-            ASK.Ask.ParentRoom(ability.Owner).ToBeTriggered[(uint)ability.TriggerEventType].Add(ability);
+            ASK.Room.ParentRoom(ability.Owner).ToBeTriggered[(uint)ability.TriggerEventType].Add(ability);
         }
 
     }//Func
@@ -79,6 +87,7 @@ namespace Battle.ABI
         {
             public override Boolean Judge(SetlEvent Event)
             {
+                LogCenter.Push(13, 0, $"判断本次事件是否触发技能“苟利”。");
                 AtkStart thisEvent = Event as AtkStart;
                 if (thisEvent.Casualty.iPage != (iPage)ParentAbi.Owner.Object)
                 { return false; }
@@ -93,10 +102,10 @@ namespace Battle.ABI
         {
             public override void Implement(SetlEvent Event)
             {
-                SE.StartAtk thisEvent = Event as SE.StartAtk;
-                Console.WriteLine($"<{thisEvent.Casualty.mName}> 预感到危险的来临，为自己增加1点生命值！({thisEvent.Casualty.mLife}->{thisEvent.Casualty.mLife + 1})");
+                AtkStart thisEvent = Event as AtkStart;
+                LogCenter.Push(7, 0, $"<{thisEvent.Casualty.iPage.Chr.Name}>的[{thisEvent.Casualty.mName}]预感到危险的来临，为自己增加1点生命值！");
                 thisEvent.Casualty.mLife = Math.Min(thisEvent.Casualty.mLife + 1, thisEvent.Casualty.mLifeMax);
-
+                LogCenter.Push(7, 0, $"<{thisEvent.Casualty.iPage.Chr.Name}>的[{thisEvent.Casualty.mName}]当前生命值：{thisEvent.Casualty.mLife}");
             }
         }
 
@@ -105,7 +114,7 @@ namespace Battle.ABI
 
             public override void Init()
             {
-                TriggerEventType = Setl.eEventType.StartAtk;
+                TriggerEventType = eEventType.AtkStart;
                 Condition = new cGouLi();
                 Condition.ParentAbi = this;
                 Effect = new eGouLi();

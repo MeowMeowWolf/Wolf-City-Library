@@ -26,3 +26,7 @@ book：
 
 boook：
 日志、消息委托、数据库访问、安全性
+
+BS:ASP.NET ADO.NET + MVC+MVVM+EF 
+CS:WINFORM+WPF+MVC+MVVM+SOCKET
+

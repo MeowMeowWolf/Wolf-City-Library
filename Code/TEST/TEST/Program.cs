@@ -13,28 +13,34 @@ namespace TEST
 
     public class A
     {
-        //public A()
-        //{ }
-        public A(int abc)
+        public void print()
         {
-            Console.WriteLine("123");
+            Console.WriteLine("A");
         }
     }
 
-    public class B : A
+    namespace NB
     {
-        public B()
+        public class B
         {
-            Console.WriteLine("B");
+            public void print()
+            {
+                Console.WriteLine("B");
+            }
+        }
+
+        namespace NC
+        {
+            public class C
+            {
+                public void print()
+                {
+                    Console.WriteLine("C");
+                }
+            }
         }
     }
-    public class C : A
-    {
-        public C(int abc) : base(abc)
-        {
-            Console.WriteLine("C");
-        }
-    }
+
     
 
     class Program
@@ -56,9 +62,12 @@ namespace TEST
 
         static void Main(string[] args)
         {
-            B b = new B();
-            Console.WriteLine("————————————");
-            C c = new C(123);
+            A a = CreateInstance<A>("TEST", "A", null);
+            a.print();
+            NB.B b = CreateInstance<NB.B>("TEST.NB", "B", null);
+            b.print();
+            NB.NC.C c = CreateInstance<NB.NC.C>("TEST.NB.NC", "C", null);
+            c.print();
 
             Console.ReadKey();
         }

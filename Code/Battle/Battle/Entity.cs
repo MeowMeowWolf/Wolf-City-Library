@@ -27,15 +27,14 @@ namespace Battle.Entity
         public void Add2Chr(Room.Character chr)
         {
             Chr = chr;
-            iPageId = ASK.Ask.ParentRoom(Chr).Sequence();
-            ASK.Ask.ParentRoom(Chr).RoomPageList.Add(iPageId, this);
+            iPageId = ASK.Room.ParentRoom(Chr).Sequence();
+            ASK.Room.ParentRoom(Chr).RoomPageList.Add(iPageId, this);
             foreach (Book.tAbility abiInfo in tPage.tAbilityList)
             {
                 ABI.Ability AbilityThis = ABI.Func.Create(abiInfo.AbilityId, null);
                 ABI.Func.Endue( new AnEntity(eEntityType.iPage, this) , AbilityThis);
+                Bok.DebugLog.LogCenter.Push(10, 0, $"对{this.iName}赋予技能:{AbilityThis.AbiInfo.Name}");
             }
-            //Region
-            //Location
         }
 
         public static iPage Create2Chr(Room.Character chr, tPage tPage)
@@ -139,7 +138,7 @@ namespace Battle.Entity
             BuffType = buffType;
             Owner = owner;
             LastTime = inLastTime;
-            BegintTime = (ASK.Ask.ParentRoom(owner)).TimeNow();
+            BegintTime = (ASK.Room.ParentRoom(owner)).TimeNow();
 
         }
     }
