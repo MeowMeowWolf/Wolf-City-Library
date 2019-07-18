@@ -31,7 +31,9 @@ namespace Battle
 
             public void Trigger()
             {
-                List<ABI.Ability> AbiListTemp = HappenRoom.ToBeTriggered[(uint)State];
+                LogCenter.Push(9, 0, $"开始触发技能效果。");
+                List<ABI.Ability> AbiListTemp = HappenRoom.ToBeTriggered[(uint)EventType];
+                LogCenter.Push(9, 0, $"{AbiListTemp.Count}个待触发。");
                 foreach (ABI.Ability abi in AbiListTemp)
                 {
                     LogCenter.Push(9, 0, $"判断{abi.AbiInfo.Name}是否符合条件");

@@ -31,3 +31,6 @@ E:\GitHub\WolfCityLibrary\Code\BookManagement\Book\obj\Debug\Book.csproj.CoreCom
 E:\GitHub\WolfCityLibrary\Code\BookManagement\Book\obj\Debug\Book.csproj.CopyComplete
 E:\GitHub\WolfCityLibrary\Code\BookManagement\Book\obj\Debug\Book.exe
 E:\GitHub\WolfCityLibrary\Code\BookManagement\Book\obj\Debug\Book.pdb
+E:\GitHub\WolfCityLibrary\Code\Run\Book.exe.config
+E:\GitHub\WolfCityLibrary\Code\Run\Book.exe
+E:\GitHub\WolfCityLibrary\Code\Run\Book.pdb

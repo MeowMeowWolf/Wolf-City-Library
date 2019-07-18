@@ -11,12 +11,11 @@ using Battle.ABI;
 
 namespace Mix
 {
-    
-    public class OneVsOne
+    class run
     {
-        public GameRoom room ;
+        public static GameRoom room;
 
-        public OneVsOne(BookSqlCmd cmd)
+        public static void play(BookSqlCmd cmd)
         {
             tAbility.ListFromDB(cmd);
             tBook.ListFromDB(cmd);
@@ -48,10 +47,6 @@ namespace Mix
 
         }// 构建完毕
 
-    }// OneVsOne
-
-    class run
-    {
         static void Main(string[] args)
         {
             System.IO.File.Delete(@"E:\GitHub\WolfCityLibrary\Code\Run\Mix.Dlog");
@@ -60,7 +55,7 @@ namespace Mix
             LogCenter.paramMaxLevel = 12;
 
             BookSqlCmd cmd = new BookSqlCmd(@"E:\GitHub\boooook.db");
-            OneVsOne ovo = new OneVsOne(cmd);
+            play(cmd);
 
             Console.ReadKey();
         }

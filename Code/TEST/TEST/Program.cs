@@ -7,42 +7,11 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Reflection;
+using System.Runtime.InteropServices;
+
 
 namespace TEST
 {
-
-    public class A
-    {
-        public void print()
-        {
-            Console.WriteLine("A");
-        }
-    }
-
-    namespace NB
-    {
-        public class B
-        {
-            public void print()
-            {
-                Console.WriteLine("B");
-            }
-        }
-
-        namespace NC
-        {
-            public class C
-            {
-                public void print()
-                {
-                    Console.WriteLine("C");
-                }
-            }
-        }
-    }
-
-    
-
     class Program
     {
         public static T CreateInstance<T>(string nameSpace, string className, object[] parameters)
@@ -60,14 +29,30 @@ namespace TEST
             }
         }
 
+        //[DllImport("user32.dll", EntryPoint = "FindWindow")]
+        //private extern static IntPtr FindWindow(string lpClassName, string lpWindowName);
+        
         static void Main(string[] args)
         {
-            A a = CreateInstance<A>("TEST", "A", null);
-            a.print();
-            NB.B b = CreateInstance<NB.B>("TEST.NB", "B", null);
-            b.print();
-            NB.NC.C c = CreateInstance<NB.NC.C>("TEST.NB.NC", "C", null);
-            c.print();
+            Random rand = new Random();
+            List<int> start = new List<int>();
+            List<int> count = new List<int>();
+
+            for (int i = 0; i < 7*7*7; i++)
+            {
+                start.Clear();
+                int temp = 999;
+                while (!(start.Contains(temp) || start.Contains(temp+1) || start.Contains(temp-1) ) )
+                {
+                    start.Add(temp);
+                    temp = rand.Next(1, 8);
+                }
+                count.Add(start.Count + 1);
+                Console.WriteLine($"出现第{start.Count + 1}颗星时翻车。");
+            }
+
+            
+            Console.WriteLine($"平均{ (float)count.Sum() / (float)count.Count}颗星星");
 
             Console.ReadKey();
         }

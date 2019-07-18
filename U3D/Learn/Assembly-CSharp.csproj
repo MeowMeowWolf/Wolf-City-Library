@@ -65,7 +65,6 @@
     <Compile Include="Assets\BookView.cs" />
     <Compile Include="Assets\Bullet.cs" />
     <Compile Include="Assets\GirlCtrl.cs" />
-    <Compile Include="Assets\MsgCenter.cs" />
     <Compile Include="Assets\UGUI.cs" />
     <Compile Include="Assets\UnityChan\Scripts\CameraController.cs" />
     <Compile Include="Assets\UnityChan\Scripts\FaceUpdate.cs" />
@@ -85,6 +84,9 @@
     <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_eyelash_blend.shader" />
     <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_hada.shader" />
     <None Include="Assets\UnityChan\Models\UnityChanShader\Shader\Unitychan_chara_hada_blend.shader" />
+    <Reference Include="Unity.TextMeshPro.Editor">
+      <HintPath>E:/GitHub/WolfCityLibrary/U3D/Learn/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
       <HintPath>E:/GitHub/WolfCityLibrary/U3D/Learn/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
